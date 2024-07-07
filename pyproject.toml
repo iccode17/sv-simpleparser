@@ -11,7 +11,7 @@ name = "sv_simpleparser"
 authors = [
     {name = 'Eric Macedo', email = 'ericsmacedo@gmail.com'}
 ]
-description = 'A simple system verilog parser, used to extract information from .sv files'
+description = 'A simple system verilog parser'
 dynamic = ["version"] # This in conjunction with setuptools_scm, will generate the 
                       # versions dynamically
 readme = "README.rst"
