@@ -83,8 +83,6 @@ Token.Number = Number
 
 # information about module
 Module = Token.Module
-HeaderStart = Module.HeaderStart
-HeaderEnd = Module.HeaderEnd
 ModuleName = Module.ModuleName
 
 Port = Module.Port

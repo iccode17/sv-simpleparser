@@ -10,8 +10,8 @@
 
 import re
 
-from lexer import RegexLexer, bygroups, include, using, this, words
-from lexer_tokens import Text, Comment, Operator, Keyword, Name, String, \
+from .lexer import RegexLexer, bygroups, include, using, this, words
+from .lexer_tokens import Text, Comment, Operator, Keyword, Name, String, \
     Number, Punctuation, Whitespace, Module, Port
 
 __all__ = ['SystemVerilogLexer']
@@ -39,7 +39,8 @@ class SystemVerilogLexer(RegexLexer):
             (r'^(\s*)(import)(\s+)', bygroups(Whitespace, Keyword.Namespace, Whitespace), 'import'),
 
             # matches the start of a module header
-            (r'^(\s*)(module)(\s+)', Keyword, 'module_name'),
+            (r'\bmodule\b', Module.ModuleStart, 'module_name'),
+            #(r'^(\s*)(module)(\s+)', Keyword, 'module_name'),
 
             (r'\s+', Whitespace),
             (r'(\\)(\n)', bygroups(String.Escape, Whitespace)),  # line continuation
@@ -251,12 +252,13 @@ class SystemVerilogLexer(RegexLexer):
         ],
         'module_body': [
             (words(('input', 'output', 'inout'), suffix=r'\b'), Port.PortDirection, 'port_declaration'),
-            (r'\);', Punctuation, '#pop'),
+            (r'\bparameter\b', Module.Param, 'param_declaration'),
+            (r'\bendmodule\b', Module.ModuleEnd, '#pop'),
             include('comments'),
         ],
         'port_declaration': [
-            (r'/(\\\n)?/(\n|(.|\n)*?[^\\]\n)', Port.Comment),
-            (r'/(\\\n)?[*](.|\n)*?[*](\\\n)?/', Port.Comment),
+            (r'/(\\\n)?/(\n|(.|\n)*?[^\\]\n)', Port.Comment), # indetify comments. Copied from another state
+            (r'/(\\\n)?[*](.|\n)*?[*](\\\n)?/', Port.Comment), # indetify comments. Copied from another state
             (words((
                 # Variable types
                 'bit', 'byte', 'chandle', 'const', 'event', 'int', 'integer',
@@ -266,14 +268,41 @@ class SystemVerilogLexer(RegexLexer):
                 # Net types
                 'supply0', 'supply1', 'tri', 'triand', 'trior', 'trireg',
                 'tri0', 'tri1', 'uwire', 'wand', 'wire', 'wor'),
-                suffix=r'\b'),
+                suffix=r'\b'), # get the type of the port
              Port.PortType),
             # Match one or more brackets, indicating the port width
             (r'((\[[^]]+\])+)', Port.PortWidth),
+
+            # port declaration ends with a ;, a ); or with the start of another port declaration
             (words(('input', 'output', 'inout'), suffix=r'\b'), Port.PortDirection, ('#pop', 'port_declaration')),
-            (r'\);', Module.HeaderEnd, '#pop'),
-            (r';', Punctuation, '#pop:2'),
+            (r'\);', Punctuation, '#pop'),
+            (r';', Punctuation, '#pop'),
             (r'\$?[a-zA-Z_]\w*', Port.PortName),
+            include('comments'),
+        ],
+
+        'param_declaration': [
+            (r'/(\\\n)?/(\n|(.|\n)*?[^\\]\n)', Module.Param.Comment), # indetify comments. Copied from another state
+            (r'/(\\\n)?[*](.|\n)*?[*](\\\n)?/', Module.Param.Comment), # indetify comments. Copied from another state
+            (words((
+                # Variable types
+                'bit', 'byte', 'chandle', 'const', 'event', 'int', 'integer',
+                'logic', 'longint', 'real', 'realtime', 'reg', 'shortint',
+                'shortreal', 'signed', 'string', 'time', 'type', 'unsigned',
+                'var', 'void',
+                # Net types
+                'supply0', 'supply1', 'tri', 'triand', 'trior', 'trireg',
+                'tri0', 'tri1', 'uwire', 'wand', 'wire', 'wor'),
+                suffix=r'\b'), # get the type of the port
+             Module.Param.ParamType),
+            # Match one or more brackets, indicating the param width
+            (r'((\[[^]]+\])+)', Module.Param.ParamWidth),
+            (r';', Punctuation, '#pop'),
+            # param declaration ends with a ;, a ); or with the start of another port declaration
+            (r'\bparameter\b', Module.Param, ('#pop', 'param_declaration')),
+            (r'\blocalparam\b', Keyword, '#pop'),
+            (words(('input', 'output', 'inout'), suffix=r'\b'), Port.PortDirection, ('#pop', 'port_declaration')),
+            (r'\$?[a-zA-Z_]\w*', Module.Param.ParamName),
             include('comments'),
         ],
 

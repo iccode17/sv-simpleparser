@@ -4,9 +4,6 @@
 // Function    : Up down counter
 // Coder      : Deepak
 //-----------------------------------------------------
-/*
-* this is a test
-*/
 module up_down_counter    (
 output reg  [7:0] out      ,  // Output of the counter
 input  wire       up_down  ,  // up_down control for counter
