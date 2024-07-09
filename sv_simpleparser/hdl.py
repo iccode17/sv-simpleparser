@@ -251,14 +251,14 @@ class SystemVerilogLexer(RegexLexer):
             include('root'),
         ],
         'module_body': [
-            (words(('input', 'output', 'inout'), suffix=r'\b'), Port.PortDirection, 'port_declaration'),
+            (words(('input', 'output', 'inout'), prefix=r'\b', suffix=r'\b'), Port.PortDirection, 'port_declaration'),
             (r'\bparameter\b', Module.Param, 'param_declaration'),
             (r'\bendmodule\b', Module.ModuleEnd, '#pop'),
             include('comments'),
         ],
         'port_declaration': [
-            (r'/(\\\n)?/(\n|(.|\n)*?[^\\]\n)', Port.Comment), # indetify comments. Copied from another state
-            (r'/(\\\n)?[*](.|\n)*?[*](\\\n)?/', Port.Comment), # indetify comments. Copied from another state
+            (r'/(\\\n)?/(\n|(.|\n)*?[^\\]\n)', Port.Comment),  # indetify comments. Copied from another state
+            (r'/(\\\n)?[*](.|\n)*?[*](\\\n)?/', Port.Comment),  # indetify comments. Copied from another state
             (words((
                 # Variable types
                 'bit', 'byte', 'chandle', 'const', 'event', 'int', 'integer',
@@ -274,7 +274,7 @@ class SystemVerilogLexer(RegexLexer):
             (r'((\[[^]]+\])+)', Port.PortWidth),
 
             # port declaration ends with a ;, a ); or with the start of another port declaration
-            (words(('input', 'output', 'inout'), suffix=r'\b'), Port.PortDirection, ('#pop', 'port_declaration')),
+            (words(('input', 'output', 'inout'), suffix=r'\b', prefix=r'\b'), Port.PortDirection, ('#pop', 'port_declaration')),
             (r'\);', Punctuation, '#pop'),
             (r';', Punctuation, '#pop'),
             (r'\$?[a-zA-Z_]\w*', Port.PortName),
@@ -301,7 +301,7 @@ class SystemVerilogLexer(RegexLexer):
             # param declaration ends with a ;, a ); or with the start of another port declaration
             (r'\bparameter\b', Module.Param, ('#pop', 'param_declaration')),
             (r'\blocalparam\b', Keyword, '#pop'),
-            (words(('input', 'output', 'inout'), suffix=r'\b'), Port.PortDirection, ('#pop', 'port_declaration')),
+            (words(('input', 'output', 'inout'), prefix=r'\b', suffix=r'\b'), Port.PortDirection, ('#pop', 'port_declaration')),
             (r'\$?[a-zA-Z_]\w*', Module.Param.ParamName),
             include('comments'),
         ],

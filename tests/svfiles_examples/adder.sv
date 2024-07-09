@@ -13,6 +13,16 @@ module adder #(
 
   assign X = A + B;
 
+  // This instance was added to test a bug
+  logic a_port;
+  logic b_port;
+  assign a_port = 'd0;
+
+  test_module u_test_module(
+      .test_input(a_port),
+      .test_output(b_port)
+      );
+
   // Dump waves
   initial begin
     $dumpfile("dump.vcd");

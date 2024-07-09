@@ -7,15 +7,13 @@ sys.path.insert(0, project_root)
 from sv_simpleparser import parse_sv
 
 
-
-
 def test_adder():
 
     mod_name_ref = 'adder'
     port_name_lst_ref = ['A', 'B', 'X']
     param_name_lst_ref = ['DATA_WIDTH', 'TEST']
-    port_width_lst_ref = ['[DATA_WIDTH-1:0]', '[DATA_WIDTH-1:0]','[DATA_WIDTH:0]',]
-    file_path = pathlib.Path(project_root)/ 'tests' / 'svfiles_examples' / 'adder.sv' 
+    port_width_lst_ref = ['[DATA_WIDTH-1:0]', '[DATA_WIDTH-1:0]', '[DATA_WIDTH:0]',]
+    file_path = pathlib.Path(project_root)/ 'tests' / 'svfiles_examples' / 'adder.sv'
 
     mod_lst = parse_sv(file_path)
 
@@ -37,7 +35,7 @@ def test_bcd_adder():
     mod_name_ref = 'bcd_adder'
     port_name_lst_ref = ['a', 'b', 'cin', 'sum', 'cout']
     port_width_lst_ref = ['[3:0]', '[3:0]', None, '[3:0]', None]
-    file_path = pathlib.Path(project_root)/ 'tests' / 'svfiles_examples' / 'bcd_adder.sv' 
+    file_path = pathlib.Path(project_root)/ 'tests' / 'svfiles_examples' / 'bcd_adder.sv'
 
     mod_lst = parse_sv(file_path)
 
