@@ -1,10 +1,10 @@
 import pathlib
-from .hdl import SystemVerilogLexer
+from ._hdl import SystemVerilogLexer
 from dataclasses import dataclass
-from .lexer_tokens import Text, Comment, Operator, Keyword, Name, String, \
-    Number, Punctuation, Whitespace, Module
+from ._lexer_tokens import Module
 
 __all__ = ['parse_sv']
+
 
 @dataclass
 class Port:
@@ -15,6 +15,7 @@ class Port:
     width: str = None
     comment: list = None
 
+
 @dataclass
 class Param:
     '''Class used to store data about a port'''
@@ -22,6 +23,7 @@ class Param:
     name: str = None
     width: str = None
     comment: list = None
+
 
 @dataclass
 class PortDeclaration:
@@ -49,7 +51,8 @@ class PortDeclaration:
             if self.comment is None:
                 self.comment = [string]
             else:
-                self.comment.append(string) 
+                self.comment.append(string)
+
 
 @dataclass
 class ParamDeclaration:
@@ -73,7 +76,7 @@ class ParamDeclaration:
             if self.comment is None:
                 self.comment = [string]
             else:
-                self.comment.append(string) 
+                self.comment.append(string)
 
 
 class SvModule:
@@ -115,7 +118,7 @@ class SvModule:
         elif token[:2] == ('Module', 'ModuleName'):
             self.name = string
 
-    
+
 def compare_tuples(x, token, strings=None):
     """
     Compares a tuple `x` with a given token and an optional list or tuple of strings.
@@ -138,8 +141,24 @@ def compare_tuples(x, token, strings=None):
         return x[0] == token and x[1] in strings
 
 
-
 def parse_sv(file_path: pathlib.Path):
+    '''Parse SystemVerilog
+
+    Parses a SystemVerilog file and returns a list of objects of SvModule class
+
+    Parameters
+    ----------
+
+    file_path: Union[str, pathlib.Path]
+        Path to the SystemVerilog file.
+    '''
+
+    if not isinstance(file_path, pathlib.Path):
+        pathlib.Path(file_path)
+
+    # Check if the file exists
+    if not file_path.exists():
+        raise FileNotFoundError(f"The file at {file_path} does not exist.")
 
     with file_path.open(mode='r') as fid:
         file_content = fid.read()
@@ -153,7 +172,6 @@ def parse_sv(file_path: pathlib.Path):
             module_lst.append(SvModule())
         elif 'Module' in token[:]:
             module_lst[-1].proc_tokens(token, string)
-            
 
     for mod in module_lst:
         mod._gen_port_lst()

@@ -10,8 +10,8 @@
 
 import re
 
-from .lexer import RegexLexer, bygroups, include, using, this, words
-from .lexer_tokens import Text, Comment, Operator, Keyword, Name, String, \
+from ._lexer import RegexLexer, bygroups, include, using, this, words
+from ._lexer_tokens import Text, Comment, Operator, Keyword, Name, String, \
     Number, Punctuation, Whitespace, Module, Port
 
 __all__ = ['SystemVerilogLexer']

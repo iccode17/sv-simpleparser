@@ -12,10 +12,10 @@ import re
 import sys
 import time
 
-from .lexer_tokens import Error, Text, Other, Whitespace, _TokenType
-from .util import get_bool_opt, get_int_opt, get_list_opt, \
+from ._lexer_tokens import Error, Text, Other, Whitespace, _TokenType
+from ._util import get_bool_opt, get_int_opt, get_list_opt, \
     make_analysator, Future, guess_decode
-from .regexopt import regex_opt
+from ._regexopt import regex_opt
 
 __all__ = ['Lexer', 'RegexLexer', 'ExtendedRegexLexer', 'DelegatingLexer',
            'LexerContext', 'include', 'inherit', 'bygroups', 'using', 'this',
