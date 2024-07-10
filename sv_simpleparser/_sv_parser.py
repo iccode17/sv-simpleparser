@@ -154,7 +154,7 @@ def parse_sv(file_path: pathlib.Path):
     '''
 
     if not isinstance(file_path, pathlib.Path):
-        pathlib.Path(file_path)
+        file_path = pathlib.Path(file_path)
 
     # Check if the file exists
     if not file_path.exists():
