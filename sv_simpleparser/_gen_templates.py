@@ -27,16 +27,24 @@ def gen_instance(module_obj):
     return instance_file
 
 
-def gen_confluence_wiki_table(module_obj):
+def remove_slashes_and_newlines(input_string):
+    # Replace '//' with an empty string
+    result = input_string.replace('//', '')
+    # Replace '\n' with an empty string
+    result = result.replace('\n', '')
+    return result.strip()
+
+
+def gen_markdown_table(module_obj):
 
     port_lst = [port.name for port in module_obj.port_lst]
-    width_lst = [rf'{port.width[:-1]}\]' if port.width is not None else '1' for port in module_obj.port_lst]
-    comment_lst = [port.comment if port.comment is not None else '' for port in module_obj.port_lst]
+    width_lst = [rf'{port.width[:-1]}]' if port.width is not None else '1' for port in module_obj.port_lst]
+    comment_lst = [remove_slashes_and_newlines(port.comment[0]) if port.comment is not None else '' for port in module_obj.port_lst]
     direction_lst = [port.direction for port in module_obj.port_lst]
 
     environment = Environment(loader=FileSystemLoader(template_path))
 
-    inst_temp = environment.get_template("confluence_wiki_table_template")
+    inst_temp = environment.get_template("markdown_table_template")
 
     instance_file = inst_temp.render(port_lst=port_lst,
                                      direction_lst=direction_lst,

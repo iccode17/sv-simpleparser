@@ -27,10 +27,10 @@ def gen_io_table(file_path):
     '''Generates an I/O table from an SV file'''
 
     from ._sv_parser import parse_sv
-    from ._gen_templates import gen_confluence_wiki_table
+    from ._gen_templates import gen_markdown_table
 
     mod_lst = parse_sv(file_path)
 
     for mod_obj in mod_lst:
-        table = gen_confluence_wiki_table(mod_obj)
+        table = gen_markdown_table(mod_obj)
         print(table)

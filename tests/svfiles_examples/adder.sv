@@ -6,7 +6,7 @@
 module adder #(
   parameter integer DATA_WIDTH, TEST = 4
 ) (
-  input  logic unsigned [DATA_WIDTH-1:0] A,
+  input  logic unsigned [DATA_WIDTH-1:0] A, // This is a test
   input  logic unsigned [DATA_WIDTH-1:0] B,
   output logic unsigned [DATA_WIDTH:0]   X
 );
