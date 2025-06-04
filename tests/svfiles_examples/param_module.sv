@@ -1,7 +1,9 @@
 // Test module with parameters and instantiations
 `timescale 1ns/1ps
 
-module param_module #(
+module param_module 
+import test_pack::*;
+#(
     parameter WIDTH = 8,
     parameter DEPTH = 4,
     parameter [7:0] INIT_VAL = 8'hFF,

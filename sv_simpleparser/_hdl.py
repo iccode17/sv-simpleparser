@@ -251,6 +251,7 @@ class SystemVerilogLexer(RegexLexer):
         ],
 
         'module_body': [
+            (r'`\w+\s*\(.*?\)', Module.Other),
             (r'\bendmodule\b', Module.ModuleEnd, '#pop'),
             (words(('input', 'output', 'inout'), prefix=r'\b', suffix=r'\b'), Port.PortDirection, 'port_declaration'),
             (r'\bparameter\b', Module.Param, 'param_declaration'),
@@ -273,8 +274,10 @@ class SystemVerilogLexer(RegexLexer):
         ],
 
         'module_header': [
+            (r'`\w+\s*\(.*?\)', Module.Other),
             (words(('input', 'output', 'inout'), prefix=r'\b', suffix=r'\b'), Port.PortDirection, 'port_declaration'),
             (r'\bparameter\b', Module.Param, 'param_declaration'),
+            (r'\bimport\b.*?;', Module.Other),
             (r';', Module.ModuleHeaderEnd, '#pop'),
             (r'\)\s*;', Module.ModuleHeaderEnd, '#pop'),
             include('comments'),
@@ -282,6 +285,7 @@ class SystemVerilogLexer(RegexLexer):
         ],
 
         'port_declaration': [
+            (r'`\w+\s*\(.*?\)', Module.Other),
             (r'/(\\\n)?/(\n|(.|\n)*?[^\\]\n)', Port.Comment),  # indetify comments. Copied from another state
             (r'/(\\\n)?[*](.|\n)*?[*](\\\n)?/', Port.Comment),  # indetify comments. Copied from another state
             (words((
@@ -308,6 +312,7 @@ class SystemVerilogLexer(RegexLexer):
         ],
 
         'param_declaration': [
+            (r'`\w+\s*\(.*?\)', Module.Other),
             (r'/(\\\n)?/(\n|(.|\n)*?[^\\]\n)', Module.Param.Comment),  # indetify comments. Copied from another state
             (r'/(\\\n)?[*](.|\n)*?[*](\\\n)?/', Module.Param.Comment),  # indetify comments. Copied from another state
             (words((
