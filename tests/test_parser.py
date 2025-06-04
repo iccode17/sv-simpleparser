@@ -117,10 +117,6 @@ def test_param_module():
     file_path = pathlib.Path(project_root) / 'tests' / 'svfiles_examples' / 'param_module.sv'
     mod_lst = parse_sv(file_path)
 
-    import pdb
-    pdb.set_trace()
-
-    # Get top module
     top_mod = next(m for m in mod_lst if m.name == mod_name_ref)
 
     # Basic module assertions

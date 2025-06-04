@@ -346,69 +346,69 @@ class SystemVerilogLexer(RegexLexer):
     }
 
 
-    def get_tokens_unprocessed(self, text, stack=('root',)):
-        """
-        Split ``text`` into (tokentype, text) pairs.
-
-        ``stack`` is the initial stack (default: ``['root']``)
-        """
-        pos = 0
-        tokendefs = self._tokens
-        statestack = list(stack)
-        statetokens = tokendefs[statestack[-1]]
-        while 1:
-            for rexmatch, action, new_state in statetokens:
-                m = rexmatch(text, pos)
-                if m:
-                    if action is not None:
-                        if type(action) is _TokenType:
-                            yield pos, action, m.group()
-                        else:
-                            yield from action(self, m)
-                    pos = m.end()
-                    if new_state is not None:
-                        # state transition
-                        if isinstance(new_state, tuple):
-                            for state in new_state:
-                                if state == '#pop':
-                                    if len(statestack) > 1:
-                                        statestack.pop()
-                                        print(statestack)
-                                elif state == '#push':
-                                    statestack.append(statestack[-1])
-                                    print(statestack)
-                                else:
-                                    statestack.append(state)
-                                    print(statestack)
-                        elif isinstance(new_state, int):
-                            # pop, but keep at least one state on the stack
-                            # (random code leading to unexpected pops should
-                            # not allow exceptions)
-                            if abs(new_state) >= len(statestack):
-                                del statestack[1:]
-                                print(statestack)
-                            else:
-                                del statestack[new_state:]
-                                print(statestack)
-                        elif new_state == '#push':
-                            statestack.append(statestack[-1])
-                            print(statestack)
-                        else:
-                            assert False, f"wrong state def: {new_state!r}"
-                        statetokens = tokendefs[statestack[-1]]
-                    break
-            else:
-                # We are here only if all state tokens have been considered
-                # and there was not a match on any of them.
-                try:
-                    if text[pos] == '\n':
-                        # at EOL, reset state to "root"
-                        #statestack = ['root']
-                        #statetokens = tokendefs['root']
-                        #yield pos, Whitespace, '\n'
-                        pos += 1
-                        continue
-                    #yield pos, Error, text[pos]
-                    pos += 1
-                except IndexError:
-                    break
+#    def get_tokens_unprocessed(self, text, stack=('root',)):
+#        """
+#        Split ``text`` into (tokentype, text) pairs.
+#
+#        ``stack`` is the initial stack (default: ``['root']``)
+#        """
+#        pos = 0
+#        tokendefs = self._tokens
+#        statestack = list(stack)
+#        statetokens = tokendefs[statestack[-1]]
+#        while 1:
+#            for rexmatch, action, new_state in statetokens:
+#                m = rexmatch(text, pos)
+#                if m:
+#                    if action is not None:
+#                        if type(action) is _TokenType:
+#                            yield pos, action, m.group()
+#                        else:
+#                            yield from action(self, m)
+#                    pos = m.end()
+#                    if new_state is not None:
+#                        # state transition
+#                        if isinstance(new_state, tuple):
+#                            for state in new_state:
+#                                if state == '#pop':
+#                                    if len(statestack) > 1:
+#                                        statestack.pop()
+#                                        print(statestack)
+#                                elif state == '#push':
+#                                    statestack.append(statestack[-1])
+#                                    print(statestack)
+#                                else:
+#                                    statestack.append(state)
+#                                    print(statestack)
+#                        elif isinstance(new_state, int):
+#                            # pop, but keep at least one state on the stack
+#                            # (random code leading to unexpected pops should
+#                            # not allow exceptions)
+#                            if abs(new_state) >= len(statestack):
+#                                del statestack[1:]
+#                                print(statestack)
+#                            else:
+#                                del statestack[new_state:]
+#                                print(statestack)
+#                        elif new_state == '#push':
+#                            statestack.append(statestack[-1])
+#                            print(statestack)
+#                        else:
+#                            assert False, f"wrong state def: {new_state!r}"
+#                        statetokens = tokendefs[statestack[-1]]
+#                    break
+#            else:
+#                # We are here only if all state tokens have been considered
+#                # and there was not a match on any of them.
+#                try:
+#                    if text[pos] == '\n':
+#                        # at EOL, reset state to "root"
+#                        #statestack = ['root']
+#                        #statetokens = tokendefs['root']
+#                        #yield pos, Whitespace, '\n'
+#                        pos += 1
+#                        continue
+#                    #yield pos, Error, text[pos]
+#                    pos += 1
+#                except IndexError:
+#                    break
