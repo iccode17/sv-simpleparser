@@ -145,6 +145,8 @@ builtin = (words((
     '$dumpportslimit', '$dumpportsoff', '$dumpportson', '$dumpvars',), suffix=r'\b'),
     Name.Builtin)
 
+preproc = (r'`(ifdef|ifndef|else|endif|define|undef)\b\s*?\w+', Comment.Preproc)
+
 variable_types = (words((
     # Variable types
     'bit', 'byte', 'chandle', 'const', 'event', 'int', 'integer',
@@ -258,6 +260,7 @@ class SystemVerilogLexer(RegexLexer):
             (r'\bbegin\b', Token.Begin, 'begin'),
             keywords,
             builtin,
+            preproc,
             (r'(\w+)\s*(?:#\(.*?\))?\s+(\w+)\s*\((.*?)\)\s*;', bygroups(Module.Body.Instance.Module,
                                                                         Module.Body.Instance.Name,
                                                                         Module.Body.Instance.Connections)),

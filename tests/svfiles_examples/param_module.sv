@@ -55,6 +55,14 @@ import test_pack::*;
         end
     end
 
+    //================
+    `ifndef SYNTHESIS
+       if (DOUT_OVR == SAT_SYM && DOUT_ENC == UNSIGNED)
+            $error("DOA=SAT_SYM is not SDASDSADSAD");
+       if ()
+
+    `endif
+
 endmodule
 
 // Submodule definition

@@ -344,27 +344,8 @@ def print_token(file_path: pathlib.Path):
         file_content = fid.read()
 
     lexer = SystemVerilogLexer()
-    mod_lst = []
     for token, string in lexer.get_tokens(file_content):
-
-        print(token, string)
-
-        # New module was found
-        if token == Module.ModuleStart:
-            mod_lst.append(SvModule())
-        elif 'Module' in token[:]:
-            mod_lst[-1].proc_tokens(token, string)
-
-    for mod in mod_lst:
-        mod._gen_port_lst()
-        mod._gen_param_lst()
-
-    import pprint
-    for mod in mod_lst:
-        print(f'Module name: {mod.name}')
-        pprint.pprint(mod.port_lst)
-        pprint.pprint(mod.param_lst)
-        pprint.pprint(mod.inst_decl)
+        print(f"({token}, {string})")
 
 
 if __name__ == '__main__':
