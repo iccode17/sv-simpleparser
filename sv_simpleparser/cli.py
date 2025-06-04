@@ -34,3 +34,12 @@ def gen_io_table(file_path):
     for mod_obj in mod_lst:
         table = gen_markdown_table(mod_obj)
         print(table)
+
+
+@cli.command()
+@click.argument("file_path", type=click.Path(exists=True, readable=True))
+def print_tokens(file_path):
+
+    from ._sv_parser import print_token
+
+    mod_lst = print_token(file_path)

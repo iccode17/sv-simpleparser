@@ -17,7 +17,12 @@ dynamic = ["version"] # This in conjunction with setuptools_scm, will generate t
 readme = "README.rst"
 keywords = ["SystemVerilog"]
 license = {text = "MIT"}
-dependencies = [ "pathlib", "click", "Jinja2" ]
+dependencies = [
+ "pathlib",
+ "click",
+ "Jinja2",
+ "pygments>=2.19.1",
+]
 
 [tool.setuptools]
 packages = ["sv_simpleparser"]
