@@ -1,0 +1,13 @@
+{
+    "cookiecutter": {
+    "_checkout": null,
+    "_output_dir": "/Users/iccode17/projects",
+    "_repo_dir": "/Users/iccode17/.cookiecutters/python-template",
+    "_template": "gh:nbiotcloud/python-template",
+    "name": "sv-simpleparser",
+    "snake_name": "sv_simpleparser",
+    "title": "Easy-To-Use SystemVerilog Parser",
+    "user": "ericsmacedo",
+    "year": "2024"
+}
+}
