@@ -30,14 +30,31 @@ Lexers for hardware descriptor languages.
 :license: BSD, see LICENSE for details.
 """
 
+import logging
 import re
 
-from pygments.lexer import RegexLexer, bygroups, include, words
-from pygments.token import Comment, Keyword, Name, Number, Operator, Punctuation, String, Token, Whitespace
+from pygments.lexer import ExtendedRegexLexer, LexerContext, bygroups, include, words
+from pygments.token import (
+    Comment,
+    Error,
+    Keyword,
+    Name,
+    Number,
+    Operator,
+    Punctuation,
+    String,
+    Text,
+    Token,
+    Whitespace,
+    _TokenType,
+)
 
 from ._token import Module, Port
 
 __all__ = ["SystemVerilogLexer"]
+
+# Create a logger for this module
+logger = logging.getLogger(__name__)
 
 punctuation = (r"[()\[\],.;\'$]", Punctuation)
 
@@ -533,8 +550,49 @@ variable_types = (
     Keyword.Type,
 )
 
+port_types = words(
+    (
+        # Variable types
+        "bit",
+        "byte",
+        "chandle",
+        "const",
+        "event",
+        "int",
+        "integer",
+        "logic",
+        "longint",
+        "real",
+        "realtime",
+        "reg",
+        "shortint",
+        "shortreal",
+        "signed",
+        "string",
+        "time",
+        "type",
+        "unsigned",
+        "var",
+        "void",
+        # Net types
+        "supply0",
+        "supply1",
+        "tri",
+        "triand",
+        "trior",
+        "trireg",
+        "tri0",
+        "tri1",
+        "uwire",
+        "wand",
+        "wire",
+        "wor",
+    ),
+    suffix=r"\b",
+)
 
-class SystemVerilogLexer(RegexLexer):
+
+class SystemVerilogLexer(ExtendedRegexLexer):
     """
     Extends verilog lexer to recognise all SystemVerilog keywords from IEEE
     1800-2009 standard.
@@ -654,218 +712,136 @@ class SystemVerilogLexer(RegexLexer):
             (r"\bend\b", Token.End, "#pop"),
         ],
         "module_name": [
+            keywords,  # The keyword module can be followed by the keywords static|automatic
+            include("comments"),
             (r"\$?[a-zA-Z_]\w*", Module.ModuleName, ("#pop", "module_header")),
-            include("root"),
+            (r".", Token.Error, "#pop"),
         ],
         "module_header": [
-            (r"`\w+\s*\(.*?\)", Module.Other),
-            (words(("input", "output", "inout"), prefix=r"\b", suffix=r"\b"), Port.PortDirection, "port_declaration"),
-            (r"\bparameter\b", Module.Param, "param_declaration"),
-            (r"\bimport\b.*?;", Module.Other),
+            include("comments"),
+            (r"\bimport\b.*?;", Module.Other),  # Package import declaration
+            (r"\bparameter\b", Module.Param, "param_declaration"),  # Parameter declaration
+            (
+                words(("input", "output", "inout"), prefix=r"\b", suffix=r"\b"),
+                Port.PortDirection,
+                "port_declaration",
+            ),  # Port declaration
             (r";", Module.ModuleHeaderEnd, "#pop"),
             (r"\)\s*;", Module.ModuleHeaderEnd, "#pop"),
-            include("comments"),
+            (r"\$?[a-zA-Z_]\w*", Name),
             punctuation,
         ],
         "port_declaration": [
-            (r"`\w+\s*\(.*?\)", Module.Other),
-            (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", Port.Comment),  # indetify comments. Copied from another state
-            (r"/(\\\n)?[*](.|\n)*?[*](\\\n)?/", Port.Comment),  # indetify comments. Copied from another state
-            (
-                words(
-                    (
-                        # Variable types
-                        "bit",
-                        "byte",
-                        "chandle",
-                        "const",
-                        "event",
-                        "int",
-                        "integer",
-                        "logic",
-                        "longint",
-                        "real",
-                        "realtime",
-                        "reg",
-                        "shortint",
-                        "shortreal",
-                        "signed",
-                        "string",
-                        "time",
-                        "type",
-                        "unsigned",
-                        "var",
-                        "void",
-                        # Net types
-                        "supply0",
-                        "supply1",
-                        "tri",
-                        "triand",
-                        "trior",
-                        "trireg",
-                        "tri0",
-                        "tri1",
-                        "uwire",
-                        "wand",
-                        "wire",
-                        "wor",
-                    ),
-                    suffix=r"\b",
-                ),  # get the type of the port
-                Port.PortType,
-            ),
-            # Match one or more brackets, indicating the port width
-            (r"((\[[^]]+\])+)", Port.PortWidth),
+            include("comments"),
+            (port_types, Port.PortType),
+            (r"((\[[^]]+\])+)", Port.PortWidth),  # Match one or more brackets, indicating the port width
             # port declaration ends with a ;, a ); or with the start of another port declaration
             (
                 words(("input", "output", "inout"), suffix=r"\b", prefix=r"\b"),
                 Port.PortDirection,
                 ("#pop", "port_declaration"),
             ),
-            (r"\)\s*;", Module.HeaderEnd, "#pop:2"),
-            (r";", Punctuation, "#pop"),
             (r"\$?[a-zA-Z_]\w*", Port.PortName),
-            include("comments"),
-            punctuation,
+            (r"\)\s*;", Module.HeaderEnd, "#pop:2"),
+            (r",", Punctuation),
+            (r";", Punctuation, "#pop"),
+            (r".", Token.Error, "#pop"),
         ],
         "param_declaration": [
             (r"`\w+\s*\(.*?\)", Module.Other),
-            (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", Module.Param.Comment),  # indetify comments. Copied from another state
-            (r"/(\\\n)?[*](.|\n)*?[*](\\\n)?/", Module.Param.Comment),  # indetify comments. Copied from another state
-            (
-                words(
-                    (
-                        # Variable types
-                        "bit",
-                        "byte",
-                        "chandle",
-                        "const",
-                        "event",
-                        "int",
-                        "integer",
-                        "logic",
-                        "longint",
-                        "real",
-                        "realtime",
-                        "reg",
-                        "shortint",
-                        "shortreal",
-                        "signed",
-                        "string",
-                        "time",
-                        "type",
-                        "unsigned",
-                        "var",
-                        "void",
-                        # Net types
-                        "supply0",
-                        "supply1",
-                        "tri",
-                        "triand",
-                        "trior",
-                        "trireg",
-                        "tri0",
-                        "tri1",
-                        "uwire",
-                        "wand",
-                        "wire",
-                        "wor",
-                    ),
-                    suffix=r"\b",
-                ),  # get the type of the port
-                Module.Param.ParamType,
-            ),
+            include("comments"),
+            (port_types, Module.Param.ParamType),
             # Match one or more brackets, indicating the param width
             (r"((\[[^]]+\])+)", Module.Param.ParamWidth),
-            (r";", Punctuation, "#pop"),
             # param declaration ends with a ;, a ); or with the start of another port declaration
             (r"\bparameter\b", Module.Param, ("#pop", "param_declaration")),
             (r"\blocalparam\b", Keyword, "#pop"),
-            (
-                words(("input", "output", "inout"), prefix=r"\b", suffix=r"\b"),
-                Port.PortDirection,
-                ("#pop", "port_declaration"),
-            ),
             (r'=\s*([\d\'hHbBdxXzZ?_][\w\'hHbBdxXzZ]*|"[^"]*")', Punctuation),  # Filter parameter values
             (r"\$?[a-zA-Z_]\w*", Module.Param.ParamName),
-            include("comments"),
-            punctuation,
+            (r"\)\s*;", Module.HeaderEnd, "#pop:2"),
+            (r",", Punctuation),
+            (r";", Punctuation, "#pop"),
+            (r".", Token.Error, "#pop"),
         ],
         "comments": [
             (r"\s+", Whitespace),
             (r"(\\)(\n)", bygroups(String.Escape, Whitespace)),  # line continuation
             (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", Comment.Single),
             (r"/(\\\n)?[*](.|\n)*?[*](\\\n)?/", Comment.Multiline),
-            (r"[{}#@]", Punctuation),
-            (r'L?"', String, "string"),
-            (r"L?'(\\.|\\[0-7]{1,3}|\\x[a-fA-F0-9]{1,2}|[^\\\'\n])'", String.Char),
         ],
+        # "comments": [
+        #    (r"\s+", Whitespace),
+        #    (r"(\\)(\n)", bygroups(String.Escape, Whitespace)),  # line continuation
+        #    (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", Comment.Single),
+        #    (r"/(\\\n)?[*](.|\n)*?[*](\\\n)?/", Comment.Multiline),
+        #    (r"[{}#@]", Punctuation),
+        #    (r'L?"', String, "string"),
+        #    (r"L?'(\\.|\\[0-7]{1,3}|\\x[a-fA-F0-9]{1,2}|[^\\\'\n])'", String.Char),
+        # ],
     }
 
-
-#    def get_tokens_unprocessed(self, text, stack=('root',)):
-#        """
-#        Split ``text`` into (tokentype, text) pairs.
-#
-#        ``stack`` is the initial stack (default: ``['root']``)
-#        """
-#        pos = 0
-#        tokendefs = self._tokens
-#        statestack = list(stack)
-#        statetokens = tokendefs[statestack[-1]]
-#        while 1:
-#            for rexmatch, action, new_state in statetokens:
-#                m = rexmatch(text, pos)
-#                if m:
-#                    if action is not None:
-#                        if type(action) is _TokenType:
-#                            yield pos, action, m.group()
-#                        else:
-#                            yield from action(self, m)
-#                    pos = m.end()
-#                    if new_state is not None:
-#                        # state transition
-#                        if isinstance(new_state, tuple):
-#                            for state in new_state:
-#                                if state == '#pop':
-#                                    if len(statestack) > 1:
-#                                        statestack.pop()
-#                                        print(statestack)
-#                                elif state == '#push':
-#                                    statestack.append(statestack[-1])
-#                                    print(statestack)
-#                                else:
-#                                    statestack.append(state)
-#                                    print(statestack)
-#                        elif isinstance(new_state, int):
-#                            # pop, but keep at least one state on the stack
-#                            # (random code leading to unexpected pops should
-#                            # not allow exceptions)
-#                            if abs(new_state) >= len(statestack):
-#                                del statestack[1:]
-#                                print(statestack)
-#                            else:
-#                                del statestack[new_state:]
-#                                print(statestack)
-#                        elif new_state == '#push':
-#                            statestack.append(statestack[-1])
-#                            print(statestack)
-#                        else:
-#                            assert False, f"wrong state def: {new_state!r}"
-#                        statetokens = tokendefs[statestack[-1]]
-#                    break
-#            else:
-#                # We are here only if all state tokens have been considered
-#                # and there was not a match on any of them.
-#                try:
-#                    if text[pos] == '\n':
-#                        # at EOL, reset state to "root"
-#                        #statestack = ['root']
-#                        #statetokens = tokendefs['root']
-#                        #yield pos, Whitespace, '\n'
-#                        pos += 1
-#                        continue
-#                    #yield pos, Error, text[pos]
-#                    pos += 1
-#                except IndexError:
-#                    break
+    def get_tokens_unprocessed(self, text=None, context=None):
+        """Split ``text`` into (tokentype, text) pairs.
+        If ``context`` is given, use this lexer context instead.
+        """
+        tokendefs = self._tokens
+        if not context:
+            ctx = LexerContext(text, 0)
+            statetokens = tokendefs["root"]
+        else:
+            ctx = context
+            statetokens = tokendefs[ctx.stack[-1]]
+            text = ctx.text
+        while 1:
+            for rexmatch, action, new_state in statetokens:
+                m = rexmatch(text, ctx.pos, ctx.end)
+                if m:
+                    if action is not None:
+                        if type(action) is _TokenType:
+                            yield ctx.pos, action, m.group()
+                            ctx.pos = m.end()
+                        else:
+                            yield from action(self, m, ctx)
+                            if not new_state:
+                                # altered the state stack?
+                                statetokens = tokendefs[ctx.stack[-1]]
+                    # CAUTION: callback must set ctx.pos!
+                    if new_state is not None:
+                        logger.debug(f"New State: {new_state}")
+                        # state transition
+                        if isinstance(new_state, tuple):
+                            for state in new_state:
+                                if state == "#pop":
+                                    if len(ctx.stack) > 1:
+                                        ctx.stack.pop()
+                                elif state == "#push":
+                                    ctx.stack.append(ctx.stack[-1])
+                                else:
+                                    ctx.stack.append(state)
+                        elif isinstance(new_state, int):
+                            # see RegexLexer for why this check is made
+                            if abs(new_state) >= len(ctx.stack):
+                                del ctx.stack[1:]
+                            else:
+                                del ctx.stack[new_state:]
+                        elif new_state == "#push":
+                            ctx.stack.append(ctx.stack[-1])
+                        else:
+                            assert False, f"wrong state def: {new_state!r}"
+                        statetokens = tokendefs[ctx.stack[-1]]
+                    break
+            else:
+                try:
+                    if ctx.pos >= ctx.end:
+                        break
+                    if text[ctx.pos] == "\n":
+                        # at EOL, reset state to "root"
+                        ctx.stack = ["root"]
+                        statetokens = tokendefs["root"]
+                        yield ctx.pos, Text, "\n"
+                        ctx.pos += 1
+                        continue
+                    yield ctx.pos, Error, text[ctx.pos]
+                    ctx.pos += 1
+                except IndexError:
+                    break

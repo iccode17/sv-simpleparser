@@ -58,6 +58,9 @@ dev = [
     "test2ref>=0.4.2",
 ]
 
+[project.scripts]
+svparser = "sv_simpleparser.cli:cli"
+
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
