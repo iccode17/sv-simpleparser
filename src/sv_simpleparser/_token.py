@@ -1,7 +1,6 @@
-#
 # MIT License
 #
-# Copyright (c) 2024 ericsmacedo
+# Copyright (c) 2025 ericsmacedo
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,12 +19,22 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-#
-"""Example Test - Feel Free To Remove."""
 
-from sv_simpleparser import example
+from pygments.token import Token
 
+__all__ = ["Module", "Port"]
 
-def test_example():
-    """Example Test."""
-    assert example(1, 2) == 3
+# information about module
+Module = Token.Module
+ModuleName = Module.ModuleName
+
+Module.Body.Instance.Module
+Module.Body.Instance.Name
+Module.Body.Instance.Connections
+
+# information about ports
+Port = Module.Port
+PortDirection = Port.PortDirection
+PortType = Port.PortType
+PortWidth = Port.PortWidth
+PortName = Port.Name

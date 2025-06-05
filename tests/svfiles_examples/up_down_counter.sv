@@ -21,4 +21,4 @@ end else begin
   out --;
 end
 
-endmodule 
+endmodule

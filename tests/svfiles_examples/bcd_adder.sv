@@ -3,7 +3,7 @@ module bcd_adder(a, b, cin, sum, cout);
     input cin;
     output [3:0] sum;
     output cout;
-    
+
     reg [4:0] temp;
     reg [3:0] sum;
     reg cout;
@@ -26,7 +26,7 @@ module tb_bcdadder;
     reg [3:0] a;
     reg [3:0] b;
     reg cin;
-    
+
     wire [3:0] sum;
     wire cout;
 
@@ -50,11 +50,11 @@ module tb_bcdadder;
         a = 4;  b = 5;  cin = 0;  #100;
         a = 8;  b = 2;  cin = 0;  #100;
         a = 9;  b = 9;  cin = 1;  #100;
-        
+
         // Add $finish to end simulation
         #100 $finish;
     end
-    
+
     // Optional: Add a monitor to display changes
     initial begin
         $monitor("Time = %0t: a=%d, b=%d, cin=%b -> sum=%d, cout=%b",

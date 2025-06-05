@@ -1,4 +1,4 @@
-{{ module_name }} #( 
+{{ module_name }} #(
 {%- for index in range(param_list|length) %}
 {%- set param_name = param_list[index] %}
     {%- if loop.last %}

@@ -4,7 +4,7 @@ module jarbitraryCounter(OUTPUT, clock, reset);
   output reg [2:0] OUTPUT;
   input clock, reset;
   reg [2:0] COUNT;
-  
+
   always @(posedge clock)
   begin
     if(reset)
@@ -14,7 +14,7 @@ module jarbitraryCounter(OUTPUT, clock, reset);
     else
       COUNT <= COUNT + 1;
   end
-  
+
   always @(COUNT)
   begin
     case(COUNT)
@@ -27,5 +27,5 @@ module jarbitraryCounter(OUTPUT, clock, reset);
       3'b110 : OUTPUT <= 3'b111;
     endcase
   end
-  
+
 endmodule
