@@ -596,7 +596,7 @@ port_types = words(
 keywords_types_tup = keywords_tup + variable_types_tup
 
 
-def filter_instance_keywords_callback(lexer, match, ctx):
+def filter_instance_keywords_callback(lexer, match, ctx):  # noqa: ARG001
     """Callback used to filter false matches for the module instances."""
     module_name = match.group(1)
     instance_name = match.group(2)

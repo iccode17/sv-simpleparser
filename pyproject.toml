@@ -134,44 +134,26 @@ select = [
     "G",
     # pyupgrade
     "UP",
-    # # annotation
-    # # "ANN"
-    # # bandit
+    # annotation
+    # "ANN"
+    # bandit
     # "S",
-    # # Argument
-    # # "ARG",
-    # # Pathlib
-    # "PTH",
-    # # Simplify
-    # # "SIM",
-    # # Return
-    # "RET",
-    # # Raise
-    # "RSE",
+    # Argument
+    "ARG",
+    # Pathlib
+    "PTH",
+    # Simplify
+    # "SIM",
+    # Return
+    "RET",
+    # Raise
+    "RSE",
 ]
 ignore = [
     # mutable class
     'RUF012',
     # logging is allowed to use f-string
     'G004',
-    # # too-many-arguments
-    # 'PLR0913',
-    # # Ambiguous doc
-    # 'D203', 'D212', 'D402', 'D406',
-    # # Multiline doc is ok.
-    # 'D200',
-    # # We use the class for constructor doc
-    # 'D107',
-    # # Magic Method Documentation is optional
-    # 'D105',
-    # # We use faster isinstance checks
-    # 'UP038',
-    # # Assert
-    # 'S101',
-    # # Type-Checking
-    # 'TC001',
-    # # Indent of doctest
-    # 'D412',
 ]
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = [
@@ -179,6 +161,10 @@ ignore = [
     "PLR2004",
     # Argument
     "ARG001",
+    # Assert
+    "S101",
+    # Open is allowed
+    "PTH123",
 ]
 
 [tool.ruff.lint.pydocstyle]
