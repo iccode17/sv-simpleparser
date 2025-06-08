@@ -295,8 +295,7 @@ class SvModule:
                 output.append(f"  {inst_name} ({inst.module})")
                 if inst.connections:
                     output.append("    Connections:")
-                    for conn in inst.connections:
-                        output.append(f"      {conn}")
+                    output.extend(f"      {conn}" for conn in inst.connections)
             output.append("")
 
         return "\n".join(output)

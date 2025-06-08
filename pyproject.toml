@@ -122,18 +122,18 @@ select = [
     "PGH",
     # Ruff-specific rules
     "RUF",
-    # # flake8-bandit: exec-builtin
-    # "S102",
-    # # numpy-legacy-random
-    # "NPY002",
-    # # Perflint
-    # "PERF",
-    # # flynt
-    # "FLY",
-    # # flake8-logging-format
-    # "G",
-    # # pyupgrade
-    # "UP",
+    # flake8-bandit: exec-builtin
+    "S102",
+    # numpy-legacy-random
+    "NPY002",
+    # Perflint
+    "PERF",
+    # flynt
+    "FLY",
+    # flake8-logging-format
+    "G",
+    # pyupgrade
+    "UP",
     # # annotation
     # # "ANN"
     # # bandit
@@ -152,6 +152,8 @@ select = [
 ignore = [
     # mutable class
     'RUF012',
+    # logging is allowed to use f-string
+    'G004',
     # # too-many-arguments
     # 'PLR0913',
     # # Ambiguous doc
