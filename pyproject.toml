@@ -103,16 +103,16 @@ select = [
     "T10",
     # flake8-gettext
     "INT",
-    # # pylint
-    # "PL",
-    # # misc lints
-    # "PIE",
-    # # flake8-pyi
-    # "PYI",
-    # # tidy imports
-    # "TID",
-    # # implicit string concatenation
-    # "ISC",
+    # pylint
+    "PL",
+    # misc lints
+    "PIE",
+    # flake8-pyi
+    "PYI",
+    # tidy imports
+    "TID",
+    # implicit string concatenation
+    "ISC",
     # # type-checking imports
     # "TC",
     # # comprehensions

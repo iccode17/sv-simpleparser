@@ -802,7 +802,7 @@ class SystemVerilogLexer(ExtendedRegexLexer):
         # ],
     }
 
-    def get_tokens_unprocessed(self, text=None, context=None):
+    def get_tokens_unprocessed(self, text=None, context=None):  # noqa: PLR0912, PLR0915
         """Split ``text`` into (tokentype, text) pairs.
 
         If ``context`` is given, use this lexer context instead.
