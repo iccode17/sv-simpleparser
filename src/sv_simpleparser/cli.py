@@ -22,6 +22,8 @@
 
 import click
 
+from ._sv_parser import parse_sv
+
 
 @click.group()
 def cli():
@@ -60,7 +62,5 @@ def gen_io_table(file_path):
 @click.argument("file_path", type=click.Path(exists=True, readable=True))
 def print_tokens(file_path):
     """Print tokens for debug"""
-
-    from ._sv_parser import parse_sv
 
     parse_sv(file_path)
