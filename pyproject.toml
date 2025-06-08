@@ -28,6 +28,7 @@ dynamic = ["version"]
 description = "Easy-To-Use SystemVerilog Parser"
 readme = "README.md"
 authors = [
+    {name = 'Eric Macedo', email = 'ericsmacedo@gmail.com'}
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -36,10 +37,10 @@ classifiers = [
 requires-python = ">=3.10.0,<4.0"
 dependencies = [
     "click>=8.2.1",
-    "jinja2>=3.1.6",
-    "pathlib>=1.0.1",
     "pygments>=2.19.1",
+    "jinja2>=3.1.6",
 ]
+keywords = ["SystemVerilog", "Verilog", "Parser"]
 
 [project.urls]
 "Homepage" = "https://github.com/ericsmacedo/sv-simpleparser"
