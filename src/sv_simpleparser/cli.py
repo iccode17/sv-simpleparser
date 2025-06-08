@@ -31,7 +31,7 @@ from rich.console import Console
 from rich.logging import RichHandler
 
 from ._gen_templates import gen_instance, gen_markdown_table
-from ._sv_parser import parse_sv
+from .parser import parse_sv
 
 _LOGLEVELMAP = {
     0: logging.WARNING,

@@ -22,6 +22,6 @@
 
 """Easy-To-Use SystemVerilog Parser."""
 
-from ._sv_parser import parse_sv, print_token
+from .parser import parse_sv, print_token
 
 __all__ = ["parse_sv", "print_token"]
