@@ -596,7 +596,7 @@ port_types = words(
 keywords_types_tup = keywords_tup + variable_types_tup
 
 
-def filter_instance_keywords_callback(lexer, match, ctx):
+def filter_instance_keywords_callback(lexer, match, ctx):  # noqa: ARG001
     """Callback used to filter false matches for the module instances."""
     module_name = match.group(1)
     instance_name = match.group(2)
@@ -802,7 +802,7 @@ class SystemVerilogLexer(ExtendedRegexLexer):
         # ],
     }
 
-    def get_tokens_unprocessed(self, text=None, context=None):
+    def get_tokens_unprocessed(self, text=None, context=None):  # noqa: C901, PLR0912, PLR0915
         """Split ``text`` into (tokentype, text) pairs.
 
         If ``context`` is given, use this lexer context instead.
@@ -850,7 +850,7 @@ class SystemVerilogLexer(ExtendedRegexLexer):
                         elif new_state == "#push":
                             ctx.stack.append(ctx.stack[-1])
                         else:
-                            assert False, f"wrong state def: {new_state!r}"
+                            raise RuntimeError(f"wrong state def: {new_state!r}")
                         statetokens = tokendefs[ctx.stack[-1]]
                     break
             else:

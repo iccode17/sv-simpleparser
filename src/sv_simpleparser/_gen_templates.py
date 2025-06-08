@@ -67,8 +67,6 @@ def gen_markdown_table(module_obj):
 
     inst_temp = environment.get_template("markdown_table_template")
 
-    instance_file = inst_temp.render(
+    return inst_temp.render(
         port_lst=port_lst, direction_lst=direction_lst, comment_lst=comment_lst, width_lst=width_lst
     )
-
-    return instance_file

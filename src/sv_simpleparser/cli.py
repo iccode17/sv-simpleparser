@@ -32,7 +32,6 @@ from ._sv_parser import parse_sv
 @click.group()
 def cli():
     """Easy-To-Use SystemVerilog Parser."""
-    pass
 
 
 arg_filepath = click.argument("file_path", type=click.Path(exists=True, readable=True, path_type=Path))

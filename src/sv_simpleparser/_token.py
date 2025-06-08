@@ -28,10 +28,6 @@ __all__ = ["Module", "Port"]
 Module = Token.Module
 ModuleName = Module.ModuleName
 
-Module.Body.Instance.Module
-Module.Body.Instance.Name
-Module.Body.Instance.Connections
-
 # information about ports
 Port = Module.Port
 PortDirection = Port.PortDirection

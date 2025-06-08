@@ -230,7 +230,7 @@ class SvModule:
             else:
                 self.inst_decl[-1].proc_tokens(token, string)
 
-    def __str__(self):
+    def __str__(self):  # noqa: C901
         output = []
 
         # Module name
@@ -295,8 +295,7 @@ class SvModule:
                 output.append(f"  {inst_name} ({inst.module})")
                 if inst.connections:
                     output.append("    Connections:")
-                    for conn in inst.connections:
-                        output.append(f"      {conn}")
+                    output.extend(f"      {conn}" for conn in inst.connections)
             output.append("")
 
         return "\n".join(output)
