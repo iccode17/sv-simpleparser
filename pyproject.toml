@@ -87,8 +87,8 @@ select = [
     "I",
     # pyflakes
     "F",
-    # # pycodestyle
-    # "E", "W",
+    # pycodestyle
+    "E", "W",
     # # pydocstyle
     # "D",
     # # pep8-naming

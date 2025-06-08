@@ -20,8 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""
-pygments.lexers.hdl
+"""pygments.lexers.hdl
 ~~~~~~~~~~~~~~~~~~~
 
 Lexers for hardware descriptor languages.
@@ -619,8 +618,7 @@ def filter_instance_keywords_callback(lexer, match, ctx):
 
 
 class SystemVerilogLexer(ExtendedRegexLexer):
-    """
-    Extends verilog lexer to recognise all SystemVerilog keywords from IEEE
+    """Extends verilog lexer to recognise all SystemVerilog keywords from IEEE
     1800-2009 standard.
     """
 

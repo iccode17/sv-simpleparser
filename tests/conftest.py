@@ -20,46 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import click
+from pathlib import Path
 
-from ._sv_parser import parse_sv
-
-
-@click.group()
-def cli():
-    pass
+from pytest import fixture
 
 
-@cli.command()
-@click.argument("file_path", type=click.Path(exists=True, readable=True))
-def gen_sv_instance(file_path):
-    """Parses an SystemVerilog file and returns a instance of the module"""
-    from ._gen_templates import gen_instance
-    from ._sv_parser import parse_sv
-
-    mod_lst = parse_sv(file_path)
-
-    for mod_obj in mod_lst:
-        instance = gen_instance(mod_obj)
-        print(instance)
-
-
-@cli.command()
-@click.argument("file_path", type=click.Path(exists=True, readable=True))
-def gen_io_table(file_path):
-    """Generates an I/O table from an SV file"""
-    from ._gen_templates import gen_markdown_table
-    from ._sv_parser import parse_sv
-
-    mod_lst = parse_sv(file_path)
-
-    for mod_obj in mod_lst:
-        table = gen_markdown_table(mod_obj)
-        print(table)
-
-
-@cli.command()
-@click.argument("file_path", type=click.Path(exists=True, readable=True))
-def print_tokens(file_path):
-    """Print tokens for debug"""
-    parse_sv(file_path)
+@fixture
+def project_root() -> Path:
+    """Path to Project Root."""
+    return Path(__file__).parent.parent

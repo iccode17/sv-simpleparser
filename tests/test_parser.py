@@ -20,16 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
-import pathlib
-import sys
 
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.insert(0, project_root)
 from sv_simpleparser import parse_sv
 
 
-def test_adder():
+def test_adder(project_root):
     mod_name_ref = "adder"
     port_name_lst_ref = ["A", "B", "X"]
     param_name_lst_ref = ["DATA_WIDTH", "TEST"]
@@ -38,7 +33,7 @@ def test_adder():
         "[DATA_WIDTH-1:0]",
         "[DATA_WIDTH:0]",
     ]
-    file_path = pathlib.Path(project_root) / "tests" / "svfiles_examples" / "adder.sv"
+    file_path = project_root / "tests" / "svfiles_examples" / "adder.sv"
 
     mod_lst = parse_sv(file_path)
 
@@ -55,11 +50,11 @@ def test_adder():
     assert param_name_lst == param_name_lst_ref
 
 
-def test_bcd_adder():
+def test_bcd_adder(project_root):
     mod_name_ref = "bcd_adder"
     port_name_lst_ref = ["a", "b", "cin", "sum", "cout"]
     port_width_lst_ref = ["[3:0]", "[3:0]", None, "[3:0]", None]
-    file_path = pathlib.Path(project_root) / "tests" / "svfiles_examples" / "bcd_adder.sv"
+    file_path = project_root / "tests" / "svfiles_examples" / "bcd_adder.sv"
 
     mod_lst = parse_sv(file_path)
 
@@ -73,13 +68,13 @@ def test_bcd_adder():
     assert port_width_lst == port_width_lst_ref
 
 
-def test_up_down_counter():
+def test_up_down_counter(project_root):
     mod_name_ref = "up_down_counter"
     port_name_lst_ref = ["out", "up_down", "clk", "reset"]
     param_name_lst_ref = []  # No parameters in this module
     port_width_lst_ref = ["[7:0]", None, None, None]  # Only 'out' has width specification
     port_direction_ref = ["output", "input", "input", "input"]  # Added port directions
-    file_path = pathlib.Path(project_root) / "tests" / "svfiles_examples" / "up_down_counter.sv"
+    file_path = project_root / "tests" / "svfiles_examples" / "up_down_counter.sv"
 
     mod_lst = parse_sv(file_path)
 
@@ -98,14 +93,14 @@ def test_up_down_counter():
     assert port_direction_lst == port_direction_ref  # Verify port directions
 
 
-def test_jarbitrary_counter():
+def test_jarbitrary_counter(project_root):
     mod_name_ref = "jarbitraryCounter"
     port_name_lst_ref = ["OUTPUT", "clock", "reset"]
     param_name_lst_ref = []  # No parameters in this module
     port_width_lst_ref = ["[2:0]", None, None]  # Only OUTPUT has width specification
     port_direction_ref = ["output", "input", "input"]  # Port directions
     port_type_ref = ["reg", None, None]  # Port types (reg/wire)
-    file_path = pathlib.Path(project_root) / "tests" / "svfiles_examples" / "jarbitraryCounter.sv"
+    file_path = project_root / "tests" / "svfiles_examples" / "jarbitraryCounter.sv"
 
     mod_lst = parse_sv(file_path)
 
@@ -126,7 +121,7 @@ def test_jarbitrary_counter():
     assert port_type_lst == port_type_ref  # Verify port types
 
 
-def test_param_module():
+def test_param_module(project_root):
     # Reference values
     mod_name_ref = "param_module"
     port_name_lst_ref = ["clk", "rst_n", "data_in", "data_out", "bidir_bus"]
@@ -138,7 +133,7 @@ def test_param_module():
     # Instance references
     inst_name_ref = ["u_sub_module", "u_sub_module2"]
 
-    file_path = pathlib.Path(project_root) / "tests" / "svfiles_examples" / "param_module.sv"
+    file_path = project_root / "tests" / "svfiles_examples" / "param_module.sv"
     mod_lst = parse_sv(file_path)
 
     top_mod = next(m for m in mod_lst if m.name == mod_name_ref)
