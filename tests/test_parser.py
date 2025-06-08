@@ -19,12 +19,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+"""Test Parser."""
 
 from sv_simpleparser import parse_sv
 
 
 def test_adder(project_root):
+    """Test Adder Example."""
     mod_name_ref = "adder"
     port_name_lst_ref = ["A", "B", "X"]
     param_name_lst_ref = ["DATA_WIDTH", "TEST"]
@@ -51,6 +52,7 @@ def test_adder(project_root):
 
 
 def test_bcd_adder(project_root):
+    """Test BCD Adder Example."""
     mod_name_ref = "bcd_adder"
     port_name_lst_ref = ["a", "b", "cin", "sum", "cout"]
     port_width_lst_ref = ["[3:0]", "[3:0]", None, "[3:0]", None]
@@ -69,6 +71,7 @@ def test_bcd_adder(project_root):
 
 
 def test_up_down_counter(project_root):
+    """Test up_down_counter Example."""
     mod_name_ref = "up_down_counter"
     port_name_lst_ref = ["out", "up_down", "clk", "reset"]
     param_name_lst_ref = []  # No parameters in this module
@@ -94,6 +97,7 @@ def test_up_down_counter(project_root):
 
 
 def test_jarbitrary_counter(project_root):
+    """Test Jarbitrary Counter."""
     mod_name_ref = "jarbitraryCounter"
     port_name_lst_ref = ["OUTPUT", "clock", "reset"]
     param_name_lst_ref = []  # No parameters in this module
@@ -122,6 +126,7 @@ def test_jarbitrary_counter(project_root):
 
 
 def test_param_module(project_root):
+    """Test Parameter Module."""
     # Reference values
     mod_name_ref = "param_module"
     port_name_lst_ref = ["clk", "rst_n", "data_in", "data_out", "bidir_bus"]

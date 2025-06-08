@@ -20,13 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+"""Test Command Line Interface."""
+
 from click.testing import CliRunner
 
 from sv_simpleparser.cli import cli
 
 
 def test_gen_sv_instance_smoke():
-    """Simply test that the command runs without errors"""
+    """Simply test that the command runs without errors."""
     runner = CliRunner()
     with runner.isolated_filesystem():
         # Create a dummy SV file
@@ -41,7 +43,7 @@ def test_gen_sv_instance_smoke():
 
 
 def test_gen_io_table_smoke():
-    """Simply test that the command runs without errors"""
+    """Simply test that the command runs without errors."""
     runner = CliRunner()
     with runner.isolated_filesystem():
         # Create a dummy SV file
@@ -56,7 +58,7 @@ def test_gen_io_table_smoke():
 
 
 def test_cli_help_smoke():
-    """Test that help command works"""
+    """Test that help command works."""
     runner = CliRunner()
     result = runner.invoke(cli, ["--help"])
     assert result.exit_code == 0

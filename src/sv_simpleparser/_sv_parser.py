@@ -22,8 +22,8 @@
 
 import logging
 import os
-import pathlib
 from dataclasses import dataclass
+from pathlib import Path
 
 from ._hdl import SystemVerilogLexer
 from ._token import Module
@@ -110,7 +110,7 @@ class PortDeclaration:
     comment: list[str] | None = None
 
     def proc_tokens(self, token, string):
-        """Processes Module.Port tokens and extract data"""
+        """Processes Module.Port tokens and extract data."""
         if token == Module.Port.PortDirection:
             self.direction = string
         elif token == Module.Port.PortType:
@@ -146,7 +146,7 @@ class ParamDeclaration:
     comment: list[str] | None = None
 
     def proc_tokens(self, token, string):
-        """Processes Module.Param tokens and extract data"""
+        """Processes Module.Param tokens and extract data."""
         if token == Module.Param.ParamType:
             self.ptype = string
         elif token == Module.Param.ParamName:
@@ -302,19 +302,16 @@ class SvModule:
         return "\n".join(output)
 
 
-def parse_sv(file_path: pathlib.Path):
-    """Parse SystemVerilog
+def parse_sv(file_path: Path | str):
+    """Parse SystemVerilog.
 
     Parses a SystemVerilog file and returns a list of objects of SvModule class
 
-    Parameters
-    ----------
-
-    file_path: Union[str, pathlib.Path]
-        Path to the SystemVerilog file.
+    Args:
+        file_path: Path to the SystemVerilog file.
     """
-    if not isinstance(file_path, pathlib.Path):
-        file_path = pathlib.Path(file_path)
+    if not isinstance(file_path, Path):
+        file_path = Path(file_path)
 
     # Check if the file exists
     if not file_path.exists():
@@ -341,19 +338,16 @@ def parse_sv(file_path: pathlib.Path):
     return module_lst
 
 
-def print_token(file_path: pathlib.Path):
-    """Parse SystemVerilog
+def print_token(file_path: Path | str):
+    """Parse SystemVerilog.
 
     Parses a SystemVerilog file and returns a list of objects of SvModule class
 
-    Parameters
-    ----------
-
-    file_path: Union[str, pathlib.Path]
-        Path to the SystemVerilog file.
+    Args:
+        file_path: Path to the SystemVerilog file.
     """
-    if not isinstance(file_path, pathlib.Path):
-        file_path = pathlib.Path(file_path)
+    if not isinstance(file_path, Path):
+        file_path = Path(file_path)
 
     # Check if the file exists
     if not file_path.exists():
@@ -370,7 +364,7 @@ def print_token(file_path: pathlib.Path):
 if __name__ == "__main__":
     import pprint
 
-    file_path = pathlib.Path("../tests/svfiles_examples/adder.sv")
+    file_path = Path("../tests/svfiles_examples/adder.sv")
 
     mod_lst = parse_sv(file_path)
 

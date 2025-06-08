@@ -19,24 +19,29 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""Command Line Interface."""
+
+from pathlib import Path
 
 import click
 
+from ._gen_templates import gen_instance, gen_markdown_table
 from ._sv_parser import parse_sv
 
 
 @click.group()
 def cli():
+    """Easy-To-Use SystemVerilog Parser."""
     pass
 
 
-@cli.command()
-@click.argument("file_path", type=click.Path(exists=True, readable=True))
-def gen_sv_instance(file_path):
-    """Parses an SystemVerilog file and returns a instance of the module"""
-    from ._gen_templates import gen_instance
-    from ._sv_parser import parse_sv
+arg_filepath = click.argument("file_path", type=click.Path(exists=True, readable=True, path_type=Path))
 
+
+@cli.command()
+@arg_filepath
+def gen_sv_instance(file_path: Path):
+    """Parses an SystemVerilog file and returns a instance of the module."""
     mod_lst = parse_sv(file_path)
 
     for mod_obj in mod_lst:
@@ -45,12 +50,9 @@ def gen_sv_instance(file_path):
 
 
 @cli.command()
-@click.argument("file_path", type=click.Path(exists=True, readable=True))
-def gen_io_table(file_path):
-    """Generates an I/O table from an SV file"""
-    from ._gen_templates import gen_markdown_table
-    from ._sv_parser import parse_sv
-
+@arg_filepath
+def gen_io_table(file_path: Path):
+    """Generates an I/O table from an SV file."""
     mod_lst = parse_sv(file_path)
 
     for mod_obj in mod_lst:
@@ -59,7 +61,7 @@ def gen_io_table(file_path):
 
 
 @cli.command()
-@click.argument("file_path", type=click.Path(exists=True, readable=True))
-def print_tokens(file_path):
-    """Print tokens for debug"""
+@arg_filepath
+def print_tokens(file_path: Path):
+    """Print tokens for debug."""
     parse_sv(file_path)

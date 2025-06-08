@@ -89,8 +89,8 @@ select = [
     "F",
     # pycodestyle
     "E", "W",
-    # # pydocstyle
-    # "D",
+    # pydocstyle
+    "D",
     # # pep8-naming
     # "N",
     # # flake8-2020
