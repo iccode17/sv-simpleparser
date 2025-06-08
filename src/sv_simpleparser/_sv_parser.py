@@ -230,7 +230,7 @@ class SvModule:
             else:
                 self.inst_decl[-1].proc_tokens(token, string)
 
-    def __str__(self):
+    def __str__(self):  # noqa: C901
         output = []
 
         # Module name

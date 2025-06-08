@@ -113,15 +113,15 @@ select = [
     "TID",
     # implicit string concatenation
     "ISC",
-    # # type-checking imports
-    # "TC",
-    # # comprehensions
-    # "C",
-    # "C4",
-    # # pygrep-hooks
-    # "PGH",
-    # # Ruff-specific rules
-    # "RUF",
+    # type-checking imports
+    "TC",
+    # comprehensions
+    "C",
+    "C4",
+    # pygrep-hooks
+    "PGH",
+    # Ruff-specific rules
+    "RUF",
     # # flake8-bandit: exec-builtin
     # "S102",
     # # numpy-legacy-random
@@ -150,6 +150,8 @@ select = [
     # "RSE",
 ]
 ignore = [
+    # mutable class
+    'RUF012',
     # # too-many-arguments
     # 'PLR0913',
     # # Ambiguous doc
