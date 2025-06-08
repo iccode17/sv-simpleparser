@@ -358,16 +358,3 @@ def print_token(file_path: Path | str):
     lexer = SystemVerilogLexer()
     for token, string in lexer.get_tokens(file_content):
         print(f"({token}, {string})")
-
-
-if __name__ == "__main__":
-    import pprint
-
-    file_path = Path("../tests/svfiles_examples/adder.sv")
-
-    mod_lst = parse_sv(file_path)
-
-    for mod in mod_lst:
-        print(f"Module name: {mod.name}")
-        pprint.pprint(mod.port_lst)
-        pprint.pprint(mod.param_lst)
