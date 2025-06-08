@@ -33,9 +33,9 @@ import logging
 from dataclasses import dataclass
 from pathlib import Path
 
+from . import datamodel as dm
 from ._hdl import SystemVerilogLexer
 from ._token import Module
-from .datamodel import Param, Port
 
 LOGGER = logging.getLogger(__name__)
 
@@ -148,8 +148,8 @@ class _SvModule:
 
     def __init__(self):
         self.name: str | None = None
-        self.port_lst: list[Port] = []
-        self.param_lst: list[Param] = []
+        self.port_lst: list[dm.Port] = []
+        self.param_lst: list[dm.Param] = []
         self.inst_dict: dict[str, str] = {}
 
         self.port_decl: list[_PortDeclaration] = []
@@ -159,7 +159,7 @@ class _SvModule:
     def _gen_port_lst(self):
         for decl in self.port_decl:
             for name in decl.name:
-                port = Port(
+                port = dm.Port(
                     name=name, direction=decl.direction, ptype=decl.ptype, width=decl.width, comment=decl.comment
                 )
                 self.port_lst.append(port)
@@ -167,7 +167,7 @@ class _SvModule:
     def _gen_param_lst(self):
         for decl in self.param_decl:
             for name in decl.name:
-                param = Param(name=name, ptype=decl.ptype, width=decl.width, comment=decl.comment)
+                param = dm.Param(name=name, ptype=decl.ptype, width=decl.width, comment=decl.comment)
                 self.param_lst.append(param)
 
     def _gen_inst_dict(self):
@@ -303,5 +303,8 @@ def parse_text(text: str):
         mod._gen_port_lst()
         mod._gen_param_lst()
         mod._gen_inst_dict()
+
+    # TODO: create dm.Module instances
+    # TODO: create dm.File and return
 
     return module_lst

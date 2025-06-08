@@ -22,30 +22,37 @@
 
 """Data Model."""
 
-from dataclasses import dataclass
+from pathlib import Path
+from typing import Literal
+
+import pydantic as pyd
 
 
-@dataclass
-class Port:
+class _BaseModel(pyd.BaseModel):
+    model_config = pyd.ConfigDict(frozen=True)
+
+
+class Port(_BaseModel):
     """Represents a port in a SystemVerilog module.
 
     Attributes:
         direction: Port direction ('input', 'output', 'inout')
-        ptype: Port type ('wire', 'reg', 'logic', etc.)
+        ptype: Port type
         name: Name of the port
         width: Bus width specification (e.g., '[7:0]')
         comment: List of associated comments
     """
 
-    direction: str
-    ptype: str | None = None
-    name: str | None = None
+    direction: Literal["input", "output", "inout"]
+    # TODO: reg/wire/logic and unsigned/signed are two different kinds of categories
+    #       right?, should they be separated?
+    ptype: Literal["reg", "wire", "logic", "unsigned", "signed"] | None
+    name: str
     width: str | None = None
     comment: list[str] | None = None
 
 
-@dataclass
-class Param:
+class Param(_BaseModel):
     """Represents a parameter in a SystemVerilog module.
 
     Attributes:
@@ -56,6 +63,21 @@ class Param:
     """
 
     ptype: str | None = None
-    name: str | None = None
+    name: str
     width: str | None = None
     comment: list[str] | None = None
+
+
+class Module(_BaseModel):
+    """Represents a SystemVerilog module."""
+
+    name: str
+    params: tuple[Param, ...]
+    ports: tuple[Port, ...]
+
+
+class File(_BaseModel):
+    """Represents a SystemVerilog File."""
+
+    path: Path | None
+    modules: tuple[Module, ...]
