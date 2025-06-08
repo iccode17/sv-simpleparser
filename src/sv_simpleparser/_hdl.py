@@ -850,7 +850,7 @@ class SystemVerilogLexer(ExtendedRegexLexer):
                         elif new_state == "#push":
                             ctx.stack.append(ctx.stack[-1])
                         else:
-                            assert False, f"wrong state def: {new_state!r}"
+                            raise RuntimeError(f"wrong state def: {new_state!r}")
                         statetokens = tokendefs[ctx.stack[-1]]
                     break
             else:
