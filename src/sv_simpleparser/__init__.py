@@ -20,4 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ._sv_parser import *
+"""Easy-To-Use SystemVerilog Parser."""
+
+from ._sv_parser import parse_sv, print_token
+
+__all__ = ["parse_sv", "print_token"]

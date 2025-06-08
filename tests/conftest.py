@@ -20,4 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Templates."""
+"""Test Fixtures."""
+
+from pathlib import Path
+
+from pytest import fixture
+
+
+@fixture
+def project_root() -> Path:
+    """Path to Project Root."""
+    return Path(__file__).parent.parent

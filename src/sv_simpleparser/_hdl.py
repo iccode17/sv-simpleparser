@@ -20,11 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""
-pygments.lexers.hdl
-~~~~~~~~~~~~~~~~~~~
-
-Lexers for hardware descriptor languages.
+"""Lexers for hardware descriptor languages (pygments.lexers.hdl).
 
 :copyright: Copyright 2006-2024 by the Pygments team, see AUTHORS.
 :license: BSD, see LICENSE for details.
@@ -601,7 +597,7 @@ keywords_types_tup = keywords_tup + variable_types_tup
 
 
 def filter_instance_keywords_callback(lexer, match, ctx):
-    """Callback used to filter false matches for the module instances"""
+    """Callback used to filter false matches for the module instances."""
     module_name = match.group(1)
     instance_name = match.group(2)
     connections = match.group(3)
@@ -619,9 +615,9 @@ def filter_instance_keywords_callback(lexer, match, ctx):
 
 
 class SystemVerilogLexer(ExtendedRegexLexer):
-    """
-    Extends verilog lexer to recognise all SystemVerilog keywords from IEEE
-    1800-2009 standard.
+    """Extends verilog lexer to recognise all SystemVerilog keywords.
+
+    SystemVerilog IEEE 1800-2009 standard.
     """
 
     name = "systemverilog"
@@ -808,6 +804,7 @@ class SystemVerilogLexer(ExtendedRegexLexer):
 
     def get_tokens_unprocessed(self, text=None, context=None):
         """Split ``text`` into (tokentype, text) pairs.
+
         If ``context`` is given, use this lexer context instead.
         """
         tokendefs = self._tokens

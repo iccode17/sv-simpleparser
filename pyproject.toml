@@ -85,12 +85,12 @@ target-version = "py310"
 select = [
     # isort
     "I",
-    # # pyflakes
-    # "F",
-    # # pycodestyle
-    # "E", "W",
-    # # pydocstyle
-    # "D",
+    # pyflakes
+    "F",
+    # pycodestyle
+    "E", "W",
+    # pydocstyle
+    "D",
     # # pep8-naming
     # "N",
     # # flake8-2020
