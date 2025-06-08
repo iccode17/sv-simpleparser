@@ -21,7 +21,6 @@
 # SOFTWARE.
 
 import logging
-import os
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -30,8 +29,7 @@ from ._token import Module
 
 __all__ = ["parse_sv", "print_token"]
 
-logging.basicConfig(level=os.getenv("LOGLEVEL", "INFO").upper(), format="%(levelname)s - %(message)s")
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 @dataclass
@@ -322,7 +320,7 @@ def parse_sv(file_path: Path | str):
     lexer = SystemVerilogLexer()
     module_lst = []
     for token, string in lexer.get_tokens(file_content):
-        logger.debug(f"({token}, {string})")
+        LOGGER.debug(f"({token}, {string})")
         # New module was found
         if token == Module.ModuleStart:
             module_lst.append(SvModule())

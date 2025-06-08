@@ -39,6 +39,8 @@ dependencies = [
     "click>=8.2.1",
     "pygments>=2.19.1",
     "jinja2>=3.1.6",
+    "pydantic>=2.11.5",
+    "rich>=14.0.0",
 ]
 keywords = ["SystemVerilog", "Verilog", "Parser"]
 
@@ -155,6 +157,11 @@ ignore = [
     'RUF012',
     # logging is allowed to use f-string
     'G004',
+    # no __init__ doc
+    'D107',
+    # no magic method doc
+    'D105',
+
 ]
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = [
