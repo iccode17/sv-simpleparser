@@ -31,6 +31,7 @@ nav:
       - Contributing: contributing.md
   - API:
       - Overview: api.md
+  - Command Line Interface: cli.md
 
 plugins:
   - search
