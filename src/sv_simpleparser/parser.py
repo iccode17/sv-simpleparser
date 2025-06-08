@@ -20,7 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""SystemVerilog Parser."""
+
+"""The parser.
+
+The parser offers two methods:
+
+* [sv_simpleparser.parser.parse_file][]
+* [sv_simpleparser.parser.parse_text][]
+"""
 
 import logging
 from dataclasses import dataclass
@@ -28,50 +35,13 @@ from pathlib import Path
 
 from ._hdl import SystemVerilogLexer
 from ._token import Module
-
-__all__ = ["parse_sv", "print_token"]
+from .datamodel import Param, Port
 
 LOGGER = logging.getLogger(__name__)
 
 
 @dataclass
-class Port:
-    """Represents a port in a SystemVerilog module.
-
-    Attributes:
-        direction: Port direction ('input', 'output', 'inout')
-        ptype: Port type ('wire', 'reg', 'logic', etc.)
-        name: Name of the port
-        width: Bus width specification (e.g., '[7:0]')
-        comment: List of associated comments
-    """
-
-    direction: str
-    ptype: str | None = None
-    name: str | None = None
-    width: str | None = None
-    comment: list[str] | None = None
-
-
-@dataclass
-class Param:
-    """Represents a parameter in a SystemVerilog module.
-
-    Attributes:
-        ptype: Parameter type ('integer', 'real', 'string', etc.)
-        name: Name of the parameter
-        width: Bus width specification if applicable
-        comment: List of associated comments
-    """
-
-    ptype: str | None = None
-    name: str | None = None
-    width: str | None = None
-    comment: list[str] | None = None
-
-
-@dataclass
-class ModInstance:
+class _ModInstance:
     """Represents an instance of a module within another module.
 
     Attributes:
@@ -92,7 +62,7 @@ class ModInstance:
 
 
 @dataclass
-class PortDeclaration:
+class _PortDeclaration:
     """Represents a port declaration block in SystemVerilog.
 
     Attributes:
@@ -130,7 +100,7 @@ class PortDeclaration:
 
 
 @dataclass
-class ParamDeclaration:
+class _ParamDeclaration:
     """Represents a parameter declaration block in SystemVerilog.
 
     Attributes:
@@ -163,7 +133,7 @@ class ParamDeclaration:
                 self.comment.append(string)
 
 
-class SvModule:
+class _SvModule:
     """Represents a complete SystemVerilog module with all its components.
 
     Attributes:
@@ -182,9 +152,9 @@ class SvModule:
         self.param_lst: list[Param] = []
         self.inst_dict: dict[str, str] = {}
 
-        self.port_decl: list[PortDeclaration] = []
-        self.param_decl: list[ParamDeclaration] = []
-        self.inst_decl: list[ModInstance] = []
+        self.port_decl: list[_PortDeclaration] = []
+        self.param_decl: list[_ParamDeclaration] = []
+        self.inst_decl: list[_ModInstance] = []
 
     def _gen_port_lst(self):
         for decl in self.port_decl:
@@ -208,14 +178,14 @@ class SvModule:
         # Capture a new port declaration object if input/output keywords are found
         if token[:2] == ("Module", "Port"):
             if token[-1] == ("PortDirection"):
-                self.port_decl.append(PortDeclaration(direction=string))
+                self.port_decl.append(_PortDeclaration(direction=string))
             else:
                 self.port_decl[-1].proc_tokens(token, string)
 
         # Capture parameters, when Module.Param tokens are found
         elif token[:2] == ("Module", "Param"):
             if token is Module.Param:
-                self.param_decl.append(ParamDeclaration())
+                self.param_decl.append(_ParamDeclaration())
             else:
                 self.param_decl[-1].proc_tokens(token, string)
 
@@ -226,7 +196,7 @@ class SvModule:
         # Capture instances
         elif token[:3] == ("Module", "Body", "Instance"):
             if token == Module.Body.Instance.Module:
-                self.inst_decl.append(ModInstance(module=string))
+                self.inst_decl.append(_ModInstance(module=string))
             else:
                 self.inst_decl[-1].proc_tokens(token, string)
 
@@ -301,10 +271,8 @@ class SvModule:
         return "\n".join(output)
 
 
-def parse_sv(file_path: Path | str):
-    """Parse SystemVerilog.
-
-    Parses a SystemVerilog file and returns a list of objects of SvModule class
+def parse_file(file_path: Path | str):
+    """Parse a SystemVerilog file and return a list of objects of SvModule class.
 
     Args:
         file_path: Path to the SystemVerilog file.
@@ -312,20 +280,22 @@ def parse_sv(file_path: Path | str):
     if not isinstance(file_path, Path):
         file_path = Path(file_path)
 
-    # Check if the file exists
-    if not file_path.exists():
-        raise FileNotFoundError(f"The file at {file_path} does not exist.")
+    return parse_text(file_path.read_text())
 
-    with file_path.open(mode="r") as fid:
-        file_content = fid.read()
 
+def parse_text(text: str):
+    """Parse a SystemVerilog text and return a list of objects of SvModule class.
+
+    Args:
+        text: SystemVerilog Statements.
+    """
     lexer = SystemVerilogLexer()
     module_lst = []
-    for token, string in lexer.get_tokens(file_content):
+    for token, string in lexer.get_tokens(text):
         LOGGER.debug(f"({token}, {string})")
         # New module was found
         if token == Module.ModuleStart:
-            module_lst.append(SvModule())
+            module_lst.append(_SvModule())
         elif "Module" in token[:]:
             module_lst[-1].proc_tokens(token, string)
 
@@ -335,26 +305,3 @@ def parse_sv(file_path: Path | str):
         mod._gen_inst_dict()
 
     return module_lst
-
-
-def print_token(file_path: Path | str):
-    """Parse SystemVerilog.
-
-    Parses a SystemVerilog file and returns a list of objects of SvModule class
-
-    Args:
-        file_path: Path to the SystemVerilog file.
-    """
-    if not isinstance(file_path, Path):
-        file_path = Path(file_path)
-
-    # Check if the file exists
-    if not file_path.exists():
-        raise FileNotFoundError(f"The file at {file_path} does not exist.")
-
-    with file_path.open(mode="r") as fid:
-        file_content = fid.read()
-
-    lexer = SystemVerilogLexer()
-    for token, string in lexer.get_tokens(file_content):
-        print(f"({token}, {string})")

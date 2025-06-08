@@ -20,8 +20,42 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Easy-To-Use SystemVerilog Parser."""
+"""Data Model."""
 
-from .parser import parse_file
+from dataclasses import dataclass
 
-__all__ = ["parse_file"]
+
+@dataclass
+class Port:
+    """Represents a port in a SystemVerilog module.
+
+    Attributes:
+        direction: Port direction ('input', 'output', 'inout')
+        ptype: Port type ('wire', 'reg', 'logic', etc.)
+        name: Name of the port
+        width: Bus width specification (e.g., '[7:0]')
+        comment: List of associated comments
+    """
+
+    direction: str
+    ptype: str | None = None
+    name: str | None = None
+    width: str | None = None
+    comment: list[str] | None = None
+
+
+@dataclass
+class Param:
+    """Represents a parameter in a SystemVerilog module.
+
+    Attributes:
+        ptype: Parameter type ('integer', 'real', 'string', etc.)
+        name: Name of the parameter
+        width: Bus width specification if applicable
+        comment: List of associated comments
+    """
+
+    ptype: str | None = None
+    name: str | None = None
+    width: str | None = None
+    comment: list[str] | None = None

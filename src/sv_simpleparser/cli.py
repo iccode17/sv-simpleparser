@@ -31,7 +31,7 @@ from rich.console import Console
 from rich.logging import RichHandler
 
 from ._gen_templates import gen_instance, gen_markdown_table
-from .parser import parse_sv
+from .parser import parse_file
 
 _LOGLEVELMAP = {
     0: logging.WARNING,
@@ -132,7 +132,7 @@ pass_ctx = click.make_pass_decorator(Ctx)
 @pass_ctx
 def gen_sv_instance(ctx, file_path):  # noqa: ARG001
     """Parses an SystemVerilog file and returns a instance of the module."""
-    mod_lst = parse_sv(file_path)
+    mod_lst = parse_file(file_path)
 
     for mod_obj in mod_lst:
         instance = gen_instance(mod_obj)
@@ -144,7 +144,7 @@ def gen_sv_instance(ctx, file_path):  # noqa: ARG001
 @pass_ctx
 def gen_io_table(ctx, file_path: Path):  # noqa: ARG001
     """Generates an I/O table from an SV file."""
-    mod_lst = parse_sv(file_path)
+    mod_lst = parse_file(file_path)
 
     for mod_obj in mod_lst:
         table = gen_markdown_table(mod_obj)

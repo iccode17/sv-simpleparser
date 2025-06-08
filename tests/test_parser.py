@@ -21,7 +21,7 @@
 # SOFTWARE.
 """Test Parser."""
 
-from sv_simpleparser import parse_sv
+from sv_simpleparser import parse_file
 
 
 def test_adder(project_root):
@@ -36,7 +36,7 @@ def test_adder(project_root):
     ]
     file_path = project_root / "tests" / "svfiles_examples" / "adder.sv"
 
-    mod_lst = parse_sv(file_path)
+    mod_lst = parse_file(file_path)
 
     mod = mod_lst[0]
 
@@ -58,7 +58,7 @@ def test_bcd_adder(project_root):
     port_width_lst_ref = ["[3:0]", "[3:0]", None, "[3:0]", None]
     file_path = project_root / "tests" / "svfiles_examples" / "bcd_adder.sv"
 
-    mod_lst = parse_sv(file_path)
+    mod_lst = parse_file(file_path)
 
     mod = mod_lst[0]
     mod_name = mod.name
@@ -79,7 +79,7 @@ def test_up_down_counter(project_root):
     port_direction_ref = ["output", "input", "input", "input"]  # Added port directions
     file_path = project_root / "tests" / "svfiles_examples" / "up_down_counter.sv"
 
-    mod_lst = parse_sv(file_path)
+    mod_lst = parse_file(file_path)
 
     mod = mod_lst[0]
 
@@ -106,7 +106,7 @@ def test_jarbitrary_counter(project_root):
     port_type_ref = ["reg", None, None]  # Port types (reg/wire)
     file_path = project_root / "tests" / "svfiles_examples" / "jarbitraryCounter.sv"
 
-    mod_lst = parse_sv(file_path)
+    mod_lst = parse_file(file_path)
 
     mod = mod_lst[0]
 
@@ -139,7 +139,7 @@ def test_param_module(project_root):
     inst_name_ref = ["u_sub_module", "u_sub_module2"]
 
     file_path = project_root / "tests" / "svfiles_examples" / "param_module.sv"
-    mod_lst = parse_sv(file_path)
+    mod_lst = parse_file(file_path)
 
     top_mod = next(m for m in mod_lst if m.name == mod_name_ref)
 
