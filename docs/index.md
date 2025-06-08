@@ -10,6 +10,10 @@
 * [Sources](https://github.com/ericsmacedo/sv-simpleparser)
 * [Issues](https://github.com/ericsmacedo/sv-simpleparser/issues)
 
+## Features
+
+* `IEEE 1800-2009 SystemVerilog`
+
 ## Installation
 
 Installing it is pretty easy:

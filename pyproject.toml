@@ -28,6 +28,7 @@ dynamic = ["version"]
 description = "Easy-To-Use SystemVerilog Parser"
 readme = "README.md"
 authors = [
+    {name = 'Eric Macedo', email = 'ericsmacedo@gmail.com'}
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -36,10 +37,10 @@ classifiers = [
 requires-python = ">=3.10.0,<4.0"
 dependencies = [
     "click>=8.2.1",
-    "jinja2>=3.1.6",
-    "pathlib>=1.0.1",
     "pygments>=2.19.1",
+    "jinja2>=3.1.6",
 ]
+keywords = ["SystemVerilog", "Verilog", "Parser"]
 
 [project.urls]
 "Homepage" = "https://github.com/ericsmacedo/sv-simpleparser"
@@ -85,89 +86,75 @@ target-version = "py310"
 select = [
     # isort
     "I",
-    # # pyflakes
-    # "F",
-    # # pycodestyle
-    # "E", "W",
-    # # pydocstyle
-    # "D",
-    # # pep8-naming
-    # "N",
-    # # flake8-2020
-    # "YTT",
-    # # flake8-bugbear
-    # "B",
-    # # flake8-quotes
-    # "Q",
-    # # flake8-debugger
-    # "T10",
-    # # flake8-gettext
-    # "INT",
-    # # pylint
-    # "PL",
-    # # misc lints
-    # "PIE",
-    # # flake8-pyi
-    # "PYI",
-    # # tidy imports
-    # "TID",
-    # # implicit string concatenation
-    # "ISC",
-    # # type-checking imports
-    # "TC",
-    # # comprehensions
-    # "C",
-    # "C4",
-    # # pygrep-hooks
-    # "PGH",
-    # # Ruff-specific rules
-    # "RUF",
-    # # flake8-bandit: exec-builtin
-    # "S102",
-    # # numpy-legacy-random
-    # "NPY002",
-    # # Perflint
-    # "PERF",
-    # # flynt
-    # "FLY",
-    # # flake8-logging-format
-    # "G",
-    # # pyupgrade
-    # "UP",
-    # # annotation
-    # # "ANN"
-    # # bandit
+    # pyflakes
+    "F",
+    # pycodestyle
+    "E", "W",
+    # pydocstyle
+    "D",
+    # pep8-naming
+    "N",
+    # flake8-2020
+    "YTT",
+    # flake8-bugbear
+    "B",
+    # flake8-quotes
+    "Q",
+    # flake8-debugger
+    "T10",
+    # flake8-gettext
+    "INT",
+    # pylint
+    "PL",
+    # misc lints
+    "PIE",
+    # flake8-pyi
+    "PYI",
+    # tidy imports
+    "TID",
+    # implicit string concatenation
+    "ISC",
+    # type-checking imports
+    "TC",
+    # comprehensions
+    "C",
+    "C4",
+    # pygrep-hooks
+    "PGH",
+    # Ruff-specific rules
+    "RUF",
+    # flake8-bandit: exec-builtin
+    "S102",
+    # numpy-legacy-random
+    "NPY002",
+    # Perflint
+    "PERF",
+    # flynt
+    "FLY",
+    # flake8-logging-format
+    "G",
+    # pyupgrade
+    "UP",
+    # annotation
+    # "ANN"
+    # bandit
     # "S",
-    # # Argument
-    # # "ARG",
-    # # Pathlib
-    # "PTH",
-    # # Simplify
-    # # "SIM",
-    # # Return
-    # "RET",
-    # # Raise
-    # "RSE",
+    # Argument
+    "ARG",
+    # Pathlib
+    "PTH",
+    # Simplify
+    # "SIM",
+    # Return
+    "RET",
+    # Raise
+    "RSE",
 ]
 ignore = [
-    # # too-many-arguments
-    # 'PLR0913',
-    # # Ambiguous doc
-    # 'D203', 'D212', 'D402', 'D406',
-    # # Multiline doc is ok.
-    # 'D200',
-    # # We use the class for constructor doc
-    # 'D107',
-    # # Magic Method Documentation is optional
-    # 'D105',
-    # # We use faster isinstance checks
-    # 'UP038',
-    # # Assert
-    # 'S101',
-    # # Type-Checking
-    # 'TC001',
-    # # Indent of doctest
-    # 'D412',
+    # mutable class
+    'RUF012',
+    # logging is allowed to use f-string
+    'G004',
 ]
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = [
@@ -175,6 +162,10 @@ ignore = [
     "PLR2004",
     # Argument
     "ARG001",
+    # Assert
+    "S101",
+    # Open is allowed
+    "PTH123",
 ]
 
 [tool.ruff.lint.pydocstyle]

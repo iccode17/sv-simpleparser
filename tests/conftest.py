@@ -20,17 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from pygments.token import Token
+"""Test Fixtures."""
 
-__all__ = ["Module", "Port"]
+from pathlib import Path
 
-# information about module
-Module = Token.Module
-ModuleName = Module.ModuleName
+from pytest import fixture
 
-# information about ports
-Port = Module.Port
-PortDirection = Port.PortDirection
-PortType = Port.PortType
-PortWidth = Port.PortWidth
-PortName = Port.Name
+
+@fixture
+def project_root() -> Path:
+    """Path to Project Root."""
+    return Path(__file__).parent.parent
