@@ -28,22 +28,20 @@ from rich.table import Table, box
 template_path = files("sv_simpleparser.Templates")
 
 
-def gen_instance(module_obj):
-    module_name = module_obj.name
-    port_lst = [port.name for port in module_obj.port_lst]
-    param_lst = [param.name for param in module_obj.param_lst]
-    param_lst = [param.name for param in module_obj.param_lst]
+def gen_instance(mod):
+    port_lst = [port.name for port in mod.ports]
+    param_lst = [param.name for param in mod.params]
 
     environment = Environment(loader=FileSystemLoader(template_path))
 
     if param_lst:
         inst_temp = environment.get_template("instance_with_param_template")
 
-        instance_file = inst_temp.render(module_name=module_name, param_list=param_lst, port_list=port_lst)
+        instance_file = inst_temp.render(module_name=mod.name, param_list=param_lst, port_list=port_lst)
     else:
         inst_temp = environment.get_template("instance_template")
 
-        instance_file = inst_temp.render(module_name=module_name, port_list=port_lst)
+        instance_file = inst_temp.render(module_name=mod.name, port_list=port_lst)
 
     return instance_file
 
@@ -56,23 +54,20 @@ def remove_slashes_and_newlines(input_string):
     return result.strip()
 
 
-def gen_markdown_table(module_obj):
-    module_name = module_obj.name
-    port_lst = [port.name for port in module_obj.port_lst]
-    width_lst = [rf"{port.width[:-1]}]" if port.width is not None else "1" for port in module_obj.port_lst]
-    comment_lst = [
-        remove_slashes_and_newlines(port.comment[0]) if port.comment is not None else "" for port in module_obj.port_lst
-    ]
-    direction_lst = [port.direction for port in module_obj.port_lst]
+def gen_markdown_table(mod):
+    port_lst = [port.name for port in mod.ports]
+    direction_lst = [port.direction for port in mod.ports]
+    width_lst = [port.width if port.width else "1" for port in mod.ports]
+    cmt_lst = [port.comment[0] if isinstance(port.comment, list) and port.comment else None for port in mod.ports]
 
-    table = Table(title=f"{module_name} interface", box=box.MARKDOWN)
+    table = Table(title=f"{mod.name} interface", box=box.MARKDOWN)
 
     table.add_column("Signal Name", no_wrap=True)
-    table.add_column("Width", justify="center", no_wrap=True)
-    table.add_column("I/O", justify="center", no_wrap=True)
+    table.add_column("Width", no_wrap=True)
+    table.add_column("I/O", no_wrap=True)
     table.add_column("Functional Description")
 
-    for port, width, direction, comment in zip(port_lst, width_lst, direction_lst, comment_lst, strict=False):
+    for port, width, direction, comment in zip(port_lst, width_lst, direction_lst, cmt_lst, strict=True):
         table.add_row(port, width, direction, comment)
 
     return table
