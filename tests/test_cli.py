@@ -42,7 +42,7 @@ def test_gen_sv_instance_smoke():
         assert result.exit_code == 0
 
 
-def test_gen_io_table_smoke():
+def test_info_smoke():
     """Simply test that the command runs without errors."""
     runner = CliRunner()
     with runner.isolated_filesystem():
@@ -51,7 +51,7 @@ def test_gen_io_table_smoke():
             f.write("module dummy(); endmodule")
 
         # Run the command
-        result = runner.invoke(cli, ["gen-io-table", "test.sv"])
+        result = runner.invoke(cli, ["info", "test.sv"])
 
         # Just check it didn't crash
         assert result.exit_code == 0

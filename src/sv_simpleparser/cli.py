@@ -142,10 +142,10 @@ def gen_sv_instance(ctx, file_path):  # noqa: ARG001
 @cli.command()
 @arg_filepath
 @pass_ctx
-def gen_io_table(ctx, file_path: Path):  # noqa: ARG001
-    """Generates an I/O table from an SV file."""
+def info(ctx, file_path: Path):
+    """Outputs information about a SV file."""
     mod_lst = parse_sv(file_path)
 
     for mod_obj in mod_lst:
         table = gen_markdown_table(mod_obj)
-        print(table)
+        ctx.console.print(table)
