@@ -21,143 +21,90 @@
 # SOFTWARE.
 """Test Parser."""
 
-from sv_simpleparser import parse_file
+from pathlib import Path
+
+from pytest import mark
+from test2ref import assert_refdata
+
+from sv_simpleparser import File, Module, ModuleInstance, Param, Port, parse_file
+
+EXAMPLES_PATH = Path(__file__).parent / "svfiles_examples"
+EXAMPLES = tuple(sorted(EXAMPLES_PATH.glob("*.sv")))
 
 
-def test_adder(project_root):
+@mark.parametrize("example", EXAMPLES)
+def test_examples(tmp_path, example):
+    """Test All Examples And Compare with 'refdata'."""
+    file = parse_file(example)
+    (tmp_path / "overview.txt").write_text(file.overview)
+    assert_refdata(test_examples, tmp_path, flavor=example.name)
+
+
+def test_adder(examples):
     """Test Adder Example."""
-    mod_name_ref = "adder"
-    port_name_lst_ref = ["A", "B", "X"]
-    param_name_lst_ref = ["DATA_WIDTH", "TEST"]
-    port_width_lst_ref = [
-        "[DATA_WIDTH-1:0]",
-        "[DATA_WIDTH-1:0]",
-        "[DATA_WIDTH:0]",
-    ]
-    file_path = project_root / "tests" / "svfiles_examples" / "adder.sv"
-
-    mod_lst = parse_file(file_path)
-
-    mod = mod_lst[0]
-
-    mod_name = mod.name
-    port_name_lst = [port.name for port in mod.port_lst]
-    port_width_lst = [port.width for port in mod.port_lst]
-    param_name_lst = [param.name for param in mod.param_lst]
-
-    assert mod_name == mod_name_ref
-    assert port_name_lst == port_name_lst_ref
-    assert port_width_lst == port_width_lst_ref
-    assert param_name_lst == param_name_lst_ref
+    file_path = examples / "adder.sv"
+    file = File(
+        path=file_path,
+        modules=(
+            Module(
+                name="adder",
+                params=(
+                    Param(ptype="integer", name="DATA_WIDTH", width=None, comment=None),
+                    Param(ptype="integer", name="TEST", width=None, comment=None),
+                ),
+                ports=(
+                    Port(direction="input", ptype="unsigned", name="A", width="[DATA_WIDTH-1:0]", comment=None),
+                    Port(direction="input", ptype="unsigned", name="B", width="[DATA_WIDTH-1:0]", comment=None),
+                    Port(direction="output", ptype="unsigned", name="X", width="[DATA_WIDTH:0]", comment=None),
+                ),
+                insts=(ModuleInstance(name="u_test_module", module="test_module"),),
+            ),
+        ),
+    )
+    assert file == parse_file(file_path)
 
 
-def test_bcd_adder(project_root):
-    """Test BCD Adder Example."""
-    mod_name_ref = "bcd_adder"
-    port_name_lst_ref = ["a", "b", "cin", "sum", "cout"]
-    port_width_lst_ref = ["[3:0]", "[3:0]", None, "[3:0]", None]
-    file_path = project_root / "tests" / "svfiles_examples" / "bcd_adder.sv"
-
-    mod_lst = parse_file(file_path)
-
-    mod = mod_lst[0]
-    mod_name = mod.name
-    port_name_lst = [port.name for port in mod.port_lst]
-    port_width_lst = [port.width for port in mod.port_lst]
-
-    assert mod_name == mod_name_ref
-    assert port_name_lst == port_name_lst_ref
-    assert port_width_lst == port_width_lst_ref
-
-
-def test_up_down_counter(project_root):
-    """Test up_down_counter Example."""
-    mod_name_ref = "up_down_counter"
-    port_name_lst_ref = ["out", "up_down", "clk", "reset"]
-    param_name_lst_ref = []  # No parameters in this module
-    port_width_lst_ref = ["[7:0]", None, None, None]  # Only 'out' has width specification
-    port_direction_ref = ["output", "input", "input", "input"]  # Added port directions
-    file_path = project_root / "tests" / "svfiles_examples" / "up_down_counter.sv"
-
-    mod_lst = parse_file(file_path)
-
-    mod = mod_lst[0]
-
-    mod_name = mod.name
-    port_name_lst = [port.name for port in mod.port_lst]
-    port_width_lst = [port.width for port in mod.port_lst]
-    param_name_lst = [param.name for param in mod.param_lst]
-    port_direction_lst = [port.direction for port in mod.port_lst]  # Get port directions
-
-    assert mod_name == mod_name_ref
-    assert port_name_lst == port_name_lst_ref
-    assert port_width_lst == port_width_lst_ref
-    assert param_name_lst == param_name_lst_ref
-    assert port_direction_lst == port_direction_ref  # Verify port directions
-
-
-def test_jarbitrary_counter(project_root):
-    """Test Jarbitrary Counter."""
-    mod_name_ref = "jarbitraryCounter"
-    port_name_lst_ref = ["OUTPUT", "clock", "reset"]
-    param_name_lst_ref = []  # No parameters in this module
-    port_width_lst_ref = ["[2:0]", None, None]  # Only OUTPUT has width specification
-    port_direction_ref = ["output", "input", "input"]  # Port directions
-    port_type_ref = ["reg", None, None]  # Port types (reg/wire)
-    file_path = project_root / "tests" / "svfiles_examples" / "jarbitraryCounter.sv"
-
-    mod_lst = parse_file(file_path)
-
-    mod = mod_lst[0]
-
-    mod_name = mod.name
-    port_name_lst = [port.name for port in mod.port_lst]
-    port_width_lst = [port.width for port in mod.port_lst]
-    param_name_lst = [param.name for param in mod.param_lst]
-    port_direction_lst = [port.direction for port in mod.port_lst]
-    port_type_lst = [port.ptype for port in mod.port_lst]  # Get port types
-
-    assert mod_name == mod_name_ref
-    assert port_name_lst == port_name_lst_ref
-    assert port_width_lst == port_width_lst_ref
-    assert param_name_lst == param_name_lst_ref
-    assert port_direction_lst == port_direction_ref
-    assert port_type_lst == port_type_ref  # Verify port types
-
-
-def test_param_module(project_root):
+def test_param_module(examples):
     """Test Parameter Module."""
-    # Reference values
-    mod_name_ref = "param_module"
-    port_name_lst_ref = ["clk", "rst_n", "data_in", "data_out", "bidir_bus"]
-    param_name_lst_ref = ["WIDTH", "DEPTH", "INIT_VAL", "ENABLE_FEATURE"]
-    port_width_lst_ref = [None, None, "[WIDTH-1:0]", "[WIDTH-1:0]", "[DEPTH-1:0]"]
-    port_direction_ref = ["input", "input", "input", "output", "inout"]
-    port_type_ref = ["wire", "wire", "wire", "reg", "wire"]
-
-    # Instance references
-    inst_name_ref = ["u_sub_module", "u_sub_module2"]
-
-    file_path = project_root / "tests" / "svfiles_examples" / "param_module.sv"
-    mod_lst = parse_file(file_path)
-
-    top_mod = next(m for m in mod_lst if m.name == mod_name_ref)
-
-    # Basic module assertions
-    assert top_mod.name == mod_name_ref
-    assert [port.name for port in top_mod.port_lst] == port_name_lst_ref
-    assert [port.width for port in top_mod.port_lst] == port_width_lst_ref
-    assert [param.name for param in top_mod.param_lst] == param_name_lst_ref
-    assert [port.direction for port in top_mod.port_lst] == port_direction_ref
-    assert [port.ptype for port in top_mod.port_lst] == port_type_ref
-
-    # Instance assertions
-    assert len(top_mod.inst_decl) == 2
-    for i, inst in enumerate(top_mod.inst_decl):
-        assert inst.name == inst_name_ref[i]
-        assert inst.module == "sub_module"
-
-    # Verify submodule is also parsed
-    sub_mod = next(m for m in mod_lst if m.name == "sub_module")
-    assert sub_mod is not None
-    assert [port.name for port in sub_mod.port_lst] == ["clk", "reset", "input_data", "output_data", "config_bus"]
+    file_path = examples / "param_module.sv"
+    file = File(
+        path=file_path,
+        modules=(
+            Module(
+                name="param_module",
+                params=(
+                    Param(ptype=None, name="WIDTH", width=None, comment=None),
+                    Param(ptype=None, name="DEPTH", width=None, comment=None),
+                    Param(ptype=None, name="INIT_VAL", width="[7:0]", comment=None),
+                    Param(ptype="logic", name="ENABLE_FEATURE", width=None, comment=None),
+                ),
+                ports=(
+                    Port(direction="input", ptype="wire", name="clk", width=None, comment=None),
+                    Port(direction="input", ptype="wire", name="rst_n", width=None, comment=None),
+                    Port(direction="input", ptype="wire", name="data_in", width="[WIDTH-1:0]", comment=None),
+                    Port(direction="output", ptype="reg", name="data_out", width="[WIDTH-1:0]", comment=None),
+                    Port(direction="inout", ptype="wire", name="bidir_bus", width="[DEPTH-1:0]", comment=None),
+                ),
+                insts=(
+                    ModuleInstance(name="u_sub_module", module="sub_module"),
+                    ModuleInstance(name="u_sub_module2", module="sub_module"),
+                ),
+            ),
+            Module(
+                name="sub_module",
+                params=(
+                    Param(ptype=None, name="DATA_WIDTH", width=None, comment=None),
+                    Param(ptype=None, name="INIT_VALUE", width="[7:0]", comment=None),
+                ),
+                ports=(
+                    Port(direction="input", ptype="wire", name="clk", width=None, comment=None),
+                    Port(direction="input", ptype="wire", name="reset", width=None, comment=None),
+                    Port(direction="input", ptype="wire", name="input_data", width="[DATA_WIDTH-1:0]", comment=None),
+                    Port(direction="output", ptype="wire", name="output_data", width="[DATA_WIDTH-1:0]", comment=None),
+                    Port(direction="inout", ptype="wire", name="config_bus", width="[DATA_WIDTH/2-1:0]", comment=None),
+                ),
+                insts=(),
+            ),
+        ),
+    )
+    assert file == parse_file(file_path)

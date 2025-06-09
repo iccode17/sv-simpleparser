@@ -271,24 +271,36 @@ class _SvModule:
         return "\n".join(output)
 
 
-def parse_file(file_path: Path | str):
-    """Parse a SystemVerilog file and return a list of objects of SvModule class.
+def parse_file(file_path: Path | str) -> dm.File:
+    """Parse a SystemVerilog file.
 
     Args:
         file_path: Path to the SystemVerilog file.
+
+    Returns:
+        Parsed Data
     """
     if not isinstance(file_path, Path):
         file_path = Path(file_path)
 
-    return parse_text(file_path.read_text())
+    return parse_text(file_path.read_text(), file_path=file_path)
 
 
-def parse_text(text: str):
-    """Parse a SystemVerilog text and return a list of objects of SvModule class.
+def parse_text(text: str, file_path: Path | str | None = None) -> dm.File:
+    """Parse a SystemVerilog text.
 
     Args:
         text: SystemVerilog Statements.
+
+    Keyword Args:
+        file_path: Related File Path.
+
+    Returns:
+        Parsed Data
     """
+    if file_path and not isinstance(file_path, Path):
+        file_path = Path(file_path)
+
     lexer = SystemVerilogLexer()
     module_lst = []
     for token, string in lexer.get_tokens(text):
@@ -304,7 +316,14 @@ def parse_text(text: str):
         mod._gen_param_lst()
         mod._gen_inst_dict()
 
-    # TODO: create dm.Module instances
-    # TODO: create dm.File and return
+    modules = tuple(
+        dm.Module(
+            name=mod.name,
+            params=mod.param_lst,
+            ports=mod.port_lst,
+            insts=tuple(dm.ModuleInstance(name=inst.name, module=inst.module) for inst in mod.inst_decl),
+        )
+        for mod in module_lst
+    )
 
-    return module_lst
+    return dm.File(path=file_path, modules=modules)

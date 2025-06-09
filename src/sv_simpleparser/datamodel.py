@@ -31,6 +31,39 @@ import pydantic as pyd
 class _BaseModel(pyd.BaseModel):
     model_config = pyd.ConfigDict(frozen=True)
 
+    @property
+    def overview(self) -> str:
+        """JSON compatible Overview."""
+        return self.model_dump_json(indent=2, exclude_defaults=True)
+
+
+class File(_BaseModel):
+    """Represents a SystemVerilog File with SystemVerilog Modules.
+
+    Attributes:
+        path: Related File.
+        modules: Modules Within That File.
+    """
+
+    path: Path | None
+    modules: tuple["Module", ...]
+
+
+class Module(_BaseModel):
+    """Represents a SystemVerilog Module with parameters, ports and submodules.
+
+    Attributes:
+        name: Module Name
+        params: Parameters
+        ports: Ports
+        insts: Submodule Instances.
+    """
+
+    name: str
+    params: tuple["Param", ...] = ()
+    ports: tuple["Port", ...] = ()
+    insts: tuple["ModuleInstance", ...] = ()
+
 
 class Port(_BaseModel):
     """Represents a port in a SystemVerilog module.
@@ -68,16 +101,14 @@ class Param(_BaseModel):
     comment: list[str] | None = None
 
 
-class Module(_BaseModel):
-    """Represents a SystemVerilog module."""
+class ModuleInstance(_BaseModel):
+    """Represents An Instance Of A Module Within Another Module.
+
+    Attributes:
+        name: Module Instance Name
+        module: Module Name
+        connections: Connections
+    """
 
     name: str
-    params: tuple[Param, ...]
-    ports: tuple[Port, ...]
-
-
-class File(_BaseModel):
-    """Represents a SystemVerilog File."""
-
-    path: Path | None
-    modules: tuple[Module, ...]
+    module: str

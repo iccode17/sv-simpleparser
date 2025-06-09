@@ -1,0 +1,27 @@
+{
+  "path": "$PRJ/tests/svfiles_examples/encoder_using_case.sv",
+  "modules": [
+    {
+      "name": "encoder_using_case",
+      "ports": [
+        {
+          "direction": "output",
+          "ptype": "reg",
+          "name": "binary_out",
+          "width": "[3:0]"
+        },
+        {
+          "direction": "input",
+          "ptype": "wire",
+          "name": "encoder_in",
+          "width": "[15:0]"
+        },
+        {
+          "direction": "input",
+          "ptype": "wire",
+          "name": "enable"
+        }
+      ]
+    }
+  ]
+}

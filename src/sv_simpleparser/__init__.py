@@ -22,6 +22,14 @@
 
 """Easy-To-Use SystemVerilog Parser."""
 
+from .datamodel import File, Module, ModuleInstance, Param, Port
 from .parser import parse_file
 
-__all__ = ["parse_file"]
+__all__ = [
+    "File",
+    "Module",
+    "ModuleInstance",
+    "Param",
+    "Port",
+    "parse_file",
+]
