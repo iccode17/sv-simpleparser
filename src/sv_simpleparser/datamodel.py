@@ -65,6 +65,24 @@ class Module(_BaseModel):
     insts: tuple["ModuleInstance", ...] = ()
 
 
+class Param(_BaseModel):
+    """Represents a parameter in a SystemVerilog module.
+
+    Attributes:
+        ptype: Parameter type ('integer', 'real', 'string', etc.)
+        name: Name of the parameter
+        dim: Dimension (Packed)
+        dim_unpacked: Unpacked Dimension
+        comment: List of associated comments
+    """
+
+    ptype: str | None = None
+    name: str
+    dim: str | None = None
+    dim_unpacked: str | None = None
+    comment: list[str] | None = None
+
+
 class Port(_BaseModel):
     """Represents a port in a SystemVerilog module.
 
@@ -72,7 +90,8 @@ class Port(_BaseModel):
         direction: Port direction ('input', 'output', 'inout')
         ptype: Port type
         name: Name of the port
-        width: Bus width specification (e.g., '[7:0]')
+        dim: Dimension (Packed)
+        dim_unpacked: Unpacked
         comment: List of associated comments
     """
 
@@ -81,23 +100,8 @@ class Port(_BaseModel):
     #       right?, should they be separated?
     ptype: Literal["reg", "wire", "logic", "unsigned", "signed"] | None
     name: str
-    width: str | None = None
-    comment: list[str] | None = None
-
-
-class Param(_BaseModel):
-    """Represents a parameter in a SystemVerilog module.
-
-    Attributes:
-        ptype: Parameter type ('integer', 'real', 'string', etc.)
-        name: Name of the parameter
-        width: Bus width specification if applicable
-        comment: List of associated comments
-    """
-
-    ptype: str | None = None
-    name: str
-    width: str | None = None
+    dim: str | None = None
+    dim_unpacked: str | None = None
     comment: list[str] | None = None
 
 

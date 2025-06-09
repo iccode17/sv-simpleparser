@@ -160,14 +160,14 @@ class _SvModule:
         for decl in self.port_decl:
             for name in decl.name:
                 port = dm.Port(
-                    name=name, direction=decl.direction, ptype=decl.ptype, width=decl.width, comment=decl.comment
+                    name=name, direction=decl.direction, ptype=decl.ptype, dim=decl.width, comment=decl.comment
                 )
                 self.port_lst.append(port)
 
     def _gen_param_lst(self):
         for decl in self.param_decl:
             for name in decl.name:
-                param = dm.Param(name=name, ptype=decl.ptype, width=decl.width, comment=decl.comment)
+                param = dm.Param(name=name, ptype=decl.ptype, dim=decl.width, comment=decl.comment)
                 self.param_lst.append(param)
 
     def _gen_inst_dict(self):

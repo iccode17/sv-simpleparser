@@ -8,7 +8,7 @@
           "direction": "output",
           "ptype": "reg",
           "name": "out",
-          "width": "[7:0]",
+          "dim": "[7:0]",
           "comment": [
             "// Output of the counter\n"
           ]

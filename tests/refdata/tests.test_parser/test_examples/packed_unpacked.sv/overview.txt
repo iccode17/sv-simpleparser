@@ -3,30 +3,48 @@
   "modules": [
     {
       "name": "packed_unpacked",
+      "params": [
+        {
+          "name": "P_VEC",
+          "dim": "[4:0]"
+        },
+        {
+          "name": "P_MATRIX",
+          "dim": "[4:0][3:0]"
+        },
+        {
+          "name": "P_UNPACK",
+          "dim": "[4:0]"
+        },
+        {
+          "name": "P_VEC_UNPACK",
+          "dim": "[4:0]"
+        }
+      ],
       "ports": [
         {
           "direction": "input",
           "ptype": null,
           "name": "vec_i",
-          "width": "[4:0]"
+          "dim": "[4:0]"
         },
         {
           "direction": "input",
           "ptype": null,
           "name": "matrix_i",
-          "width": "[4:0][3:0]"
+          "dim": "[4:0][3:0]"
         },
         {
           "direction": "input",
           "ptype": null,
           "name": "unpack_i",
-          "width": "[4:0]"
+          "dim": "[4:0]"
         },
         {
           "direction": "input",
           "ptype": null,
           "name": "vec_unpack_i",
-          "width": "[4:0]"
+          "dim": "[4:0]"
         },
         {
           "direction": "output",

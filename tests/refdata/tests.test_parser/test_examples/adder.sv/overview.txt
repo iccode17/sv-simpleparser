@@ -18,7 +18,7 @@
           "direction": "input",
           "ptype": "unsigned",
           "name": "A",
-          "width": "[DATA_WIDTH-1:0]",
+          "dim": "[DATA_WIDTH-1:0]",
           "comment": [
             "// This is a test\n",
             "// This is another test\n"
@@ -28,13 +28,13 @@
           "direction": "input",
           "ptype": "unsigned",
           "name": "B",
-          "width": "[DATA_WIDTH-1:0]"
+          "dim": "[DATA_WIDTH-1:0]"
         },
         {
           "direction": "output",
           "ptype": "unsigned",
           "name": "X",
-          "width": "[DATA_WIDTH:0]"
+          "dim": "[DATA_WIDTH:0]"
         }
       ],
       "insts": [
