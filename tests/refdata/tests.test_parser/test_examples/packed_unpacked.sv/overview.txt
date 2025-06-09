@@ -1,0 +1,39 @@
+{
+  "path": "$PRJ/tests/svfiles_examples/packed_unpacked.sv",
+  "modules": [
+    {
+      "name": "packed_unpacked",
+      "ports": [
+        {
+          "direction": "input",
+          "ptype": null,
+          "name": "vec_i",
+          "width": "[4:0]"
+        },
+        {
+          "direction": "input",
+          "ptype": null,
+          "name": "matrix_i",
+          "width": "[4:0][3:0]"
+        },
+        {
+          "direction": "input",
+          "ptype": null,
+          "name": "unpack_i",
+          "width": "[4:0]"
+        },
+        {
+          "direction": "input",
+          "ptype": null,
+          "name": "vec_unpack_i",
+          "width": "[4:0]"
+        },
+        {
+          "direction": "output",
+          "ptype": null,
+          "name": "out_o"
+        }
+      ]
+    }
+  ]
+}
