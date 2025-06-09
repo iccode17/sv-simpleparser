@@ -21,15 +21,12 @@
 # SOFTWARE.
 """Test Parser."""
 
-from pathlib import Path
-
 from pytest import mark
 from test2ref import assert_refdata
 
 from sv_simpleparser import parse_file
 
-EXAMPLES_PATH = Path(__file__).parent / "svfiles_examples"
-EXAMPLES = tuple(sorted(EXAMPLES_PATH.glob("*.sv")))
+from .conftest import EXAMPLES
 
 
 @mark.parametrize("example", EXAMPLES)
