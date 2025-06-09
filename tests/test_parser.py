@@ -33,5 +33,5 @@ from .conftest import EXAMPLES
 def test_examples(tmp_path, example):
     """Test All Examples And Compare with 'refdata'."""
     file = parse_file(example)
-    (tmp_path / "overview.txt").write_text(file.overview)
+    (tmp_path / "overview.json").write_text(file.overview)
     assert_refdata(test_examples, tmp_path, flavor=example.name)

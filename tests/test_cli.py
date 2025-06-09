@@ -58,7 +58,7 @@ def test_info(tmp_path, runner, example):
         result = runner.invoke(cli, ["info", str(example)])
 
         assert result.exit_code == 0
-        (tmp_path / "output.txt").write_text(result.output)
+        (tmp_path / "output.md").write_text(result.output)
 
     assert_refdata(test_info, tmp_path, flavor=example.name)
 
