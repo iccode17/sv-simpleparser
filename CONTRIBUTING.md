@@ -2,6 +2,9 @@
 
 Please follow the github workflow. Create a ticket and/or branch. Create a pull-request.
 
+See [github Documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) for further information.
+We follow the [Semantic Version Scheme](https://semver.org/).
+
 ## Local Development
 
 ### Installation
