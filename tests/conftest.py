@@ -31,3 +31,9 @@ from pytest import fixture
 def project_root() -> Path:
     """Path to Project Root."""
     return Path(__file__).parent.parent
+
+
+@fixture
+def examples() -> Path:
+    """Path to Examples."""
+    return Path(__file__).parent / "svfiles_examples"

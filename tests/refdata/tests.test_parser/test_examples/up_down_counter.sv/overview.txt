@@ -1,0 +1,31 @@
+{
+  "path": "$PRJ/tests/svfiles_examples/up_down_counter.sv",
+  "modules": [
+    {
+      "name": "up_down_counter",
+      "ports": [
+        {
+          "direction": "output",
+          "ptype": "reg",
+          "name": "out",
+          "width": "[7:0]"
+        },
+        {
+          "direction": "input",
+          "ptype": "wire",
+          "name": "up_down"
+        },
+        {
+          "direction": "input",
+          "ptype": "wire",
+          "name": "clk"
+        },
+        {
+          "direction": "input",
+          "ptype": "wire",
+          "name": "reset"
+        }
+      ]
+    }
+  ]
+}

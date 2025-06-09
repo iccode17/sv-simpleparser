@@ -31,11 +31,14 @@ nav:
       - Contributing: contributing.md
   - API:
       - Overview: api.md
+      - Parser: api-parser.md
+      - Data Model: api-datamodel.md
   - Command Line Interface: cli.md
 
 plugins:
   - search
   - include-markdown
+  - autorefs
   - literate-nav:
       nav_file: README.md
       implicit_index: true
