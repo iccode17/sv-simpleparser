@@ -5,7 +5,10 @@
       "name": "param_module",
       "params": [
         {
-          "name": "WIDTH"
+          "name": "WIDTH",
+          "comment": [
+            "// Width of the input data\n"
+          ]
         },
         {
           "name": "DEPTH"
@@ -28,13 +31,19 @@
         {
           "direction": "input",
           "ptype": "wire",
-          "name": "rst_n"
+          "name": "rst_n",
+          "comment": [
+            "// active-low reset\n"
+          ]
         },
         {
           "direction": "input",
           "ptype": "wire",
           "name": "data_in",
-          "width": "[WIDTH-1:0]"
+          "width": "[WIDTH-1:0]",
+          "comment": [
+            "// Input data\n"
+          ]
         },
         {
           "direction": "output",
