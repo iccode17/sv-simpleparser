@@ -73,14 +73,14 @@ class Param(_BaseModel):
         name: Name of the parameter
         dim: Dimension (Packed)
         dim_unpacked: Unpacked Dimension
-        comment: List of associated comments
+        comment: tuple of associated comments
     """
 
     ptype: str | None = None
     name: str
     dim: str | None = None
-    dim_unpacked: str | None = None
-    comment: list[str] | None = None
+    dim_unpacked: str = ""
+    comment: tuple[str, ...] = ()
 
 
 class Port(_BaseModel):
@@ -92,7 +92,7 @@ class Port(_BaseModel):
         name: Name of the port
         dim: Dimension (Packed)
         dim_unpacked: Unpacked
-        comment: List of associated comments
+        comment: tuple of associated comments
     """
 
     direction: Literal["input", "output", "inout"]
@@ -101,8 +101,8 @@ class Port(_BaseModel):
     ptype: Literal["reg", "wire", "logic", "unsigned", "signed"] | None
     name: str
     dim: str | None = None
-    dim_unpacked: str | None = None
-    comment: list[str] | None = None
+    dim_unpacked: str = ""
+    comment: tuple[str, ...] = ()
 
 
 class ModuleInstance(_BaseModel):

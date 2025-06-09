@@ -10,7 +10,7 @@
           "name": "binary_out",
           "dim": "[3:0]",
           "comment": [
-            "//  4 bit binary Output\n"
+            "4 bit binary Output"
           ]
         },
         {
@@ -19,7 +19,7 @@
           "name": "encoder_in",
           "dim": "[15:0]",
           "comment": [
-            "//  16-bit Input\n"
+            "16-bit Input"
           ]
         },
         {
@@ -27,7 +27,7 @@
           "ptype": "wire",
           "name": "enable",
           "comment": [
-            "//  Enable for the encoder\n"
+            "Enable for the encoder"
           ]
         }
       ]

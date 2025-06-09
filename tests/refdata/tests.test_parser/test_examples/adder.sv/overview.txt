@@ -20,8 +20,8 @@
           "name": "A",
           "dim": "[DATA_WIDTH-1:0]",
           "comment": [
-            "// This is a test\n",
-            "// This is another test\n"
+            "This is a test",
+            "This is another test"
           ]
         },
         {
