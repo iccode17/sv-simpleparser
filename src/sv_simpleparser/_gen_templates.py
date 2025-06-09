@@ -23,6 +23,7 @@
 from importlib.resources import files
 
 from jinja2 import Environment, FileSystemLoader
+from rich.table import Table, box
 
 template_path = files("sv_simpleparser.Templates")
 
@@ -56,6 +57,7 @@ def remove_slashes_and_newlines(input_string):
 
 
 def gen_markdown_table(module_obj):
+    module_name = module_obj.name
     port_lst = [port.name for port in module_obj.port_lst]
     width_lst = [rf"{port.width[:-1]}]" if port.width is not None else "1" for port in module_obj.port_lst]
     comment_lst = [
@@ -63,10 +65,14 @@ def gen_markdown_table(module_obj):
     ]
     direction_lst = [port.direction for port in module_obj.port_lst]
 
-    environment = Environment(loader=FileSystemLoader(template_path))
+    table = Table(title=f"{module_name} interface", box=box.MARKDOWN)
 
-    inst_temp = environment.get_template("markdown_table_template")
+    table.add_column("Signal Name", no_wrap=True)
+    table.add_column("Width", justify="center", no_wrap=True)
+    table.add_column("I/O", justify="center", no_wrap=True)
+    table.add_column("Functional Description")
 
-    return inst_temp.render(
-        port_lst=port_lst, direction_lst=direction_lst, comment_lst=comment_lst, width_lst=width_lst
-    )
+    for port, width, direction, comment in zip(port_lst, width_lst, direction_lst, comment_lst, strict=False):
+        table.add_row(port, width, direction, comment)
+
+    return table
