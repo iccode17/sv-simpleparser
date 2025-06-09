@@ -23,38 +23,44 @@
 """Test Command Line Interface."""
 
 from click.testing import CliRunner
+from pytest import mark
+from test2ref import assert_refdata
 
 from sv_simpleparser.cli import cli
 
+from .conftest import EXAMPLES_PATH
 
-def test_gen_sv_instance_smoke():
-    """Simply test that the command runs without errors."""
-    runner = CliRunner()
+# We are just testing a reduced set of examples here
+EXAMPLES = (
+    EXAMPLES_PATH / "param_module.sv",
+    EXAMPLES_PATH / "adder.sv",
+)
+
+
+@mark.parametrize("example", EXAMPLES)
+def test_gen_sv_instance(tmp_path, runner, example):
+    """Test Info Command."""
     with runner.isolated_filesystem():
-        # Create a dummy SV file
-        with open("test.sv", "w") as f:
-            f.write("module dummy(); endmodule")
-
         # Run the command
-        result = runner.invoke(cli, ["gen-sv-instance", "test.sv"])
+        result = runner.invoke(cli, ["gen-sv-instance", str(example)])
 
-        # Just check it didn't crash
         assert result.exit_code == 0
+        (tmp_path / "output.txt").write_text(result.output)
+
+    assert_refdata(test_gen_sv_instance, tmp_path, flavor=example.name)
 
 
-def test_info_smoke():
-    """Simply test that the command runs without errors."""
-    runner = CliRunner()
+@mark.parametrize("example", EXAMPLES)
+def test_info(tmp_path, runner, example):
+    """Test Info Command."""
     with runner.isolated_filesystem():
-        # Create a dummy SV file
-        with open("test.sv", "w") as f:
-            f.write("module dummy(); endmodule")
-
         # Run the command
-        result = runner.invoke(cli, ["info", "test.sv"])
+        result = runner.invoke(cli, ["info", str(example)])
 
-        # Just check it didn't crash
         assert result.exit_code == 0
+        (tmp_path / "output.txt").write_text(result.output)
+
+    assert_refdata(test_info, tmp_path, flavor=example.name)
 
 
 def test_cli_help_smoke():
