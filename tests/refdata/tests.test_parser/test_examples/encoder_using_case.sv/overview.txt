@@ -8,18 +8,27 @@
           "direction": "output",
           "ptype": "reg",
           "name": "binary_out",
-          "width": "[3:0]"
+          "width": "[3:0]",
+          "comment": [
+            "//  4 bit binary Output\n"
+          ]
         },
         {
           "direction": "input",
           "ptype": "wire",
           "name": "encoder_in",
-          "width": "[15:0]"
+          "width": "[15:0]",
+          "comment": [
+            "//  16-bit Input\n"
+          ]
         },
         {
           "direction": "input",
           "ptype": "wire",
-          "name": "enable"
+          "name": "enable",
+          "comment": [
+            "//  Enable for the encoder\n"
+          ]
         }
       ]
     }

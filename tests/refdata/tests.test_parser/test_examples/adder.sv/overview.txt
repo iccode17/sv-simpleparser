@@ -18,7 +18,11 @@
           "direction": "input",
           "ptype": "unsigned",
           "name": "A",
-          "width": "[DATA_WIDTH-1:0]"
+          "width": "[DATA_WIDTH-1:0]",
+          "comment": [
+            "// This is a test\n",
+            "// This is another test\n"
+          ]
         },
         {
           "direction": "input",

@@ -4,14 +4,14 @@
 module param_module
 import test_pack::*;
 #(
-    parameter WIDTH = 8,
+    parameter WIDTH = 8, // Width of the input data
     parameter DEPTH = 4,
     parameter [7:0] INIT_VAL = 8'hFF,
     parameter logic ENABLE_FEATURE = 1'b1
 ) (
     input wire clk,
     input wire rst_n,  // active-low reset
-    input wire [WIDTH-1:0] data_in,
+    input wire [WIDTH-1:0] data_in, // Input data
     output reg [WIDTH-1:0] data_out,
     inout wire [DEPTH-1:0] bidir_bus
 );

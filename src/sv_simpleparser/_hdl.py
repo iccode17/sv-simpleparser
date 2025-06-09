@@ -29,7 +29,7 @@
 import logging
 import re
 
-from pygments.lexer import ExtendedRegexLexer, LexerContext, bygroups, include, words
+from pygments.lexer import ExtendedRegexLexer, LexerContext, bygroups, default, include, words
 from pygments.token import (
     Comment,
     Error,
@@ -737,7 +737,7 @@ class SystemVerilogLexer(ExtendedRegexLexer):
             keywords,  # The keyword module can be followed by the keywords static|automatic
             include("comments"),
             (r"\$?[a-zA-Z_]\w*", Module.ModuleName, ("#pop", "module_header")),
-            (r".", Token.Error, "#pop"),
+            default("#pop"),
         ],
         "module_header": [
             include("comments"),
@@ -754,7 +754,7 @@ class SystemVerilogLexer(ExtendedRegexLexer):
             punctuation,
         ],
         "port_declaration": [
-            include("comments"),
+            include("port_comments"),
             (port_types, Port.PortType),
             (r"((\[[^]]+\])+)", Port.PortWidth),  # Match one or more brackets, indicating the port width
             # port declaration ends with a ;, a ); or with the start of another port declaration
@@ -767,11 +767,11 @@ class SystemVerilogLexer(ExtendedRegexLexer):
             (r"\)\s*;", Module.HeaderEnd, "#pop:2"),
             (r",", Punctuation),
             (r";", Punctuation, "#pop"),
-            (r".", Token.Error, "#pop"),
+            default("#pop"),
         ],
         "param_declaration": [
             (r"`\w+\s*\(.*?\)", Module.Other),
-            include("comments"),
+            include("param_comments"),
             (port_types, Module.Param.ParamType),
             # Match one or more brackets, indicating the param width
             (r"((\[[^]]+\])+)", Module.Param.ParamWidth),
@@ -783,13 +783,25 @@ class SystemVerilogLexer(ExtendedRegexLexer):
             (r"\)\s*;", Module.HeaderEnd, "#pop:2"),
             (r",", Punctuation),
             (r";", Punctuation, "#pop"),
-            (r".", Token.Error, "#pop"),
+            default("#pop"),
         ],
         "comments": [
             (r"\s+", Whitespace),
             (r"(\\)(\n)", bygroups(String.Escape, Whitespace)),  # line continuation
             (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", Comment.Single),
             (r"/(\\\n)?[*](.|\n)*?[*](\\\n)?/", Comment.Multiline),
+        ],
+        "port_comments": [
+            (r"\s+", Whitespace),
+            (r"(\\)(\n)", bygroups(String.Escape, Whitespace)),  # line continuation
+            (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", Module.Port.Comment),
+            (r"/(\\\n)?[*](.|\n)*?[*](\\\n)?/", Module.Port.Comment),
+        ],
+        "param_comments": [
+            (r"\s+", Whitespace),
+            (r"(\\)(\n)", bygroups(String.Escape, Whitespace)),  # line continuation
+            (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", Module.Param.Comment),
+            (r"/(\\\n)?[*](.|\n)*?[*](\\\n)?/", Module.Param.Comment),
         ],
         # "comments": [
         #    (r"\s+", Whitespace),

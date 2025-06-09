@@ -8,22 +8,34 @@
           "direction": "output",
           "ptype": "reg",
           "name": "out",
-          "width": "[7:0]"
+          "width": "[7:0]",
+          "comment": [
+            "// Output of the counter\n"
+          ]
         },
         {
           "direction": "input",
           "ptype": "wire",
-          "name": "up_down"
+          "name": "up_down",
+          "comment": [
+            "// up_down control for counter\n"
+          ]
         },
         {
           "direction": "input",
           "ptype": "wire",
-          "name": "clk"
+          "name": "clk",
+          "comment": [
+            "// clock input\n"
+          ]
         },
         {
           "direction": "input",
           "ptype": "wire",
-          "name": "reset"
+          "name": "reset",
+          "comment": [
+            "// reset input\n"
+          ]
         }
       ]
     }

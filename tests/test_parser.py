@@ -53,7 +53,13 @@ def test_adder(examples):
                     Param(ptype="integer", name="TEST", width=None, comment=None),
                 ),
                 ports=(
-                    Port(direction="input", ptype="unsigned", name="A", width="[DATA_WIDTH-1:0]", comment=None),
+                    Port(
+                        direction="input",
+                        ptype="unsigned",
+                        name="A",
+                        width="[DATA_WIDTH-1:0]",
+                        comment=["// This is a test\n", "// This is another test\n"],
+                    ),
                     Port(direction="input", ptype="unsigned", name="B", width="[DATA_WIDTH-1:0]", comment=None),
                     Port(direction="output", ptype="unsigned", name="X", width="[DATA_WIDTH:0]", comment=None),
                 ),
@@ -73,15 +79,21 @@ def test_param_module(examples):
             Module(
                 name="param_module",
                 params=(
-                    Param(ptype=None, name="WIDTH", width=None, comment=None),
+                    Param(ptype=None, name="WIDTH", width=None, comment=["// Width of the input data\n"]),
                     Param(ptype=None, name="DEPTH", width=None, comment=None),
                     Param(ptype=None, name="INIT_VAL", width="[7:0]", comment=None),
                     Param(ptype="logic", name="ENABLE_FEATURE", width=None, comment=None),
                 ),
                 ports=(
                     Port(direction="input", ptype="wire", name="clk", width=None, comment=None),
-                    Port(direction="input", ptype="wire", name="rst_n", width=None, comment=None),
-                    Port(direction="input", ptype="wire", name="data_in", width="[WIDTH-1:0]", comment=None),
+                    Port(direction="input", ptype="wire", name="rst_n", width=None, comment=["// active-low reset\n"]),
+                    Port(
+                        direction="input",
+                        ptype="wire",
+                        name="data_in",
+                        width="[WIDTH-1:0]",
+                        comment=["// Input data\n"],
+                    ),
                     Port(direction="output", ptype="reg", name="data_out", width="[WIDTH-1:0]", comment=None),
                     Port(direction="inout", ptype="wire", name="bidir_bus", width="[DEPTH-1:0]", comment=None),
                 ),
