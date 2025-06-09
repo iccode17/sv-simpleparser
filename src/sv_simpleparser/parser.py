@@ -280,7 +280,7 @@ def parse_file(file_path: Path | str) -> dm.File:
     Returns:
         Parsed Data
     """
-    if not isinstance(file_path, Path):
+    if isinstance(file_path, str):
         file_path = Path(file_path)
 
     return parse_text(file_path.read_text(), file_path=file_path)
@@ -298,9 +298,25 @@ def parse_text(text: str, file_path: Path | str | None = None) -> dm.File:
     Returns:
         Parsed Data
     """
-    if file_path and not isinstance(file_path, Path):
+    if isinstance(file_path, str):
         file_path = Path(file_path)
 
+    module_lst = _parse_text(text)
+
+    modules = tuple(
+        dm.Module(
+            name=mod.name,
+            params=mod.param_lst,
+            ports=mod.port_lst,
+            insts=tuple(dm.ModuleInstance(name=inst.name, module=inst.module) for inst in mod.inst_decl),
+        )
+        for mod in module_lst
+    )
+
+    return dm.File(path=file_path, modules=modules)
+
+
+def _parse_text(text: str):
     lexer = SystemVerilogLexer()
     module_lst = []
     for token, string in lexer.get_tokens(text):
@@ -316,14 +332,4 @@ def parse_text(text: str, file_path: Path | str | None = None) -> dm.File:
         mod._gen_param_lst()
         mod._gen_inst_dict()
 
-    modules = tuple(
-        dm.Module(
-            name=mod.name,
-            params=mod.param_lst,
-            ports=mod.port_lst,
-            insts=tuple(dm.ModuleInstance(name=inst.name, module=inst.module) for inst in mod.inst_decl),
-        )
-        for mod in module_lst
-    )
-
-    return dm.File(path=file_path, modules=modules)
+    return module_lst
