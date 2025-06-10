@@ -152,8 +152,7 @@ def info(ctx: Ctx, file_path: Path) -> None:
 
 @cli.command()
 @arg_filepath
-@pass_ctx
-def json(ctx: Ctx, file_path: Path) -> None:
+def json(file_path: Path) -> None:
     """Dump All Extracted Information in a JSON file."""
     file = parse_file(file_path)
-    ctx.console.print(file.overview)
+    print(file.overview)
