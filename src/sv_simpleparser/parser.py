@@ -163,11 +163,15 @@ class _SvModule:
     def _gen_port_lst(self):
         for decl in self.port_decl:
             for name in decl.name:
+                # TODO: maybe split in parser and not in post-processing
+                ptype = decl.ptype if decl.ptype in ("reg", "wire", "logic") else ""
+                dtype = decl.ptype if decl.ptype in ("signed", "unsigned") else ""
                 port = dm.Port(
                     name=name,
                     direction=decl.direction,
-                    ptype=decl.ptype,
-                    dim=decl.width,
+                    ptype=ptype,
+                    dtype=dtype,
+                    dim=decl.width or "",
                     comment=_normalize_comments(decl.comment),
                 )
                 self.port_lst.append(port)
@@ -175,7 +179,9 @@ class _SvModule:
     def _gen_param_lst(self):
         for decl in self.param_decl:
             for name in decl.name:
-                param = dm.Param(name=name, ptype=decl.ptype, dim=decl.width, comment=_normalize_comments(decl.comment))
+                param = dm.Param(
+                    name=name, ptype=decl.ptype or "", dim=decl.width or "", comment=_normalize_comments(decl.comment)
+                )
                 self.param_lst.append(param)
 
     def _gen_inst_dict(self):

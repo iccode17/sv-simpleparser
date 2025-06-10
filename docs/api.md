@@ -20,12 +20,13 @@
     ...     for inst in module.insts:
     ...         print(" ", repr(inst))
     'adder'
-      Param(ptype='integer', name='DATA_WIDTH', dim=None, dim_unpacked='', comment=())
-      Param(ptype='integer', name='TEST', dim=None, dim_unpacked='', comment=())
-      Port(direction='input', ptype='unsigned', name='A', dim='[DATA_WIDTH-1:0]', dim_unpacked='', comment=('This is a test', 'This is another test'))
-      Port(direction='input', ptype='unsigned', name='B', dim='[DATA_WIDTH-1:0]', dim_unpacked='', comment=())
-      Port(direction='output', ptype='unsigned', name='X', dim='[DATA_WIDTH:0]', dim_unpacked='', comment=())
+      Param(ptype='integer', name='DATA_WIDTH', dim='', dim_unpacked='', ifdefs=(), comment=())
+      Param(ptype='integer', name='TEST', dim='', dim_unpacked='', ifdefs=(), comment=())
+      Port(direction='input', ptype='', dtype='unsigned', name='A', dim='[DATA_WIDTH-1:0]', dim_unpacked='', ifdefs=(), comment=('This is a test', 'This is another test'))
+      Port(direction='input', ptype='', dtype='unsigned', name='B', dim='[DATA_WIDTH-1:0]', dim_unpacked='', ifdefs=(), comment=())
+      Port(direction='output', ptype='', dtype='unsigned', name='X', dim='[DATA_WIDTH:0]', dim_unpacked='', ifdefs=(), comment=())
       ModuleInstance(name='u_test_module', module='test_module')
+
 
     ```
 
