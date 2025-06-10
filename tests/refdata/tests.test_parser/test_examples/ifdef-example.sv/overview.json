@@ -1,0 +1,46 @@
+{
+  "path": "$PRJ/examples/ifdef-example.sv",
+  "modules": [
+    {
+      "name": "ifdef_example",
+      "params": [
+        {
+          "name": "PARAM0",
+          "ifdefs": ["BAR"]
+        },
+        {
+          "name": "PARAM1"
+        }
+      ],
+      "ports": [
+        {
+          "direction": "input",
+          "name": "a_i"
+        },
+        {
+          "direction": "input",
+          "name": "b_i",
+          "ifdefs": ["FOO"]
+        },
+        {
+          "direction": "input",
+          "name": "c_i",
+          "ifdefs": ["FOO", "BAZ"]
+        },
+        {
+          "direction": "input",
+          "name": "d_i",
+          "ifdefs": ["FOO"]
+        },
+        {
+          "direction": "input",
+          "name": "e_i"
+        },
+        {
+          "direction": "output",
+          "name": "x_o"
+        }
+      ]
+    }
+  ]
+}
