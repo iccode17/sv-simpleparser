@@ -40,7 +40,17 @@
       "insts": [
         {
           "name": "u_test_module",
-          "module": "test_module"
+          "module": "test_module",
+          "connections": [
+            {
+              "port": "test_input",
+              "con": "a_port"
+            },
+            {
+              "port": "test_output",
+              "con": "b_port"
+            }
+          ]
         }
       ]
     }

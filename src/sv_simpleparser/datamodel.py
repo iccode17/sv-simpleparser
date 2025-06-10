@@ -29,7 +29,7 @@ import pydantic as pyd
 
 
 class _BaseModel(pyd.BaseModel):
-    model_config = pyd.ConfigDict(frozen=True)
+    model_config = pyd.ConfigDict(frozen=True, extra="forbid")
 
     @property
     def overview(self) -> str:
@@ -107,6 +107,20 @@ class Port(_BaseModel):
     comment: tuple[str, ...] = ()
 
 
+class Connection(_BaseModel):
+    """Connection.
+
+    Attributes:
+        port: Port
+        con: Connection
+        comment: Comment
+    """
+
+    port: str = ""
+    con: str = ""
+    comment: tuple[str, ...] = ()
+
+
 class ModuleInstance(_BaseModel):
     """Represents An Instance Of A Module Within Another Module.
 
@@ -118,3 +132,4 @@ class ModuleInstance(_BaseModel):
 
     name: str
     module: str
+    connections: tuple[Connection, ...] = ()

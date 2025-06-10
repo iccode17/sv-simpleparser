@@ -34,7 +34,29 @@
       "insts": [
         {
           "name": "uut",
-          "module": "bcd_adder"
+          "module": "bcd_adder",
+          "connections": [
+            {
+              "port": "a",
+              "con": "a"
+            },
+            {
+              "port": "b",
+              "con": "b"
+            },
+            {
+              "port": "cin",
+              "con": "cin"
+            },
+            {
+              "port": "sum",
+              "con": "sum"
+            },
+            {
+              "port": "cout",
+              "con": "cout"
+            }
+          ]
         }
       ]
     }

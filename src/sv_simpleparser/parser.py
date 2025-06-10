@@ -30,6 +30,8 @@ The parser offers two methods:
 """
 
 import logging
+import re
+from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -38,6 +40,7 @@ from ._hdl import SystemVerilogLexer
 from ._token import Module
 
 LOGGER = logging.getLogger(__name__)
+RE_CON = re.compile(r"\s*\.(?P<port>.*)\s*\((?P<con>.*)\)\s*(//(?P<comment>.*))?")
 
 
 @dataclass
@@ -52,13 +55,13 @@ class _ModInstance:
 
     name: str | None = None
     module: str | None = None
-    connections: list[str] | None = None
+    connections: tuple[dm.Connection, ...] | None = None
 
     def proc_tokens(self, token, string):
         if token == Module.Body.Instance.Name:
             self.name = string
         elif token == Module.Body.Instance.Connections:
-            self.connections = string
+            self.connections = tuple(_normalize_connections(string))
 
 
 @dataclass
@@ -135,6 +138,21 @@ class _ParamDeclaration:
 
 def _normalize_comments(comment: list[str]) -> tuple[str, ...]:
     return tuple(line.removeprefix("//").strip() for line in comment or ())
+
+
+def _normalize_connections(lines: str) -> Iterator[dm.Connection]:
+    # TODO: please use lexer for this hack!
+    for line in lines.splitlines():
+        line = line.strip()  # noqa: PLW2901
+        if not line:
+            continue
+        mat = RE_CON.match(line)
+        if not mat:
+            LOGGER.warning(f"Invalid connection: {line}")
+            continue
+        data = mat.groupdict()
+        data["comment"] = (data["comment"],) if data["comment"] else ()
+        yield dm.Connection(**data)  # type: ignore[arg-type]
 
 
 class _SvModule:
@@ -252,7 +270,10 @@ def parse_text(text: str, file_path: Path | str | None = None) -> dm.File:
             name=mod.name,
             params=mod.param_lst,
             ports=mod.port_lst,
-            insts=tuple(dm.ModuleInstance(name=inst.name, module=inst.module) for inst in mod.inst_decl),
+            insts=tuple(
+                dm.ModuleInstance(name=inst.name, module=inst.module, connections=inst.connections)
+                for inst in mod.inst_decl
+            ),
         )
         for mod in module_lst
     )
