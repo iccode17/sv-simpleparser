@@ -16,6 +16,7 @@
 
 # Easy-To-Use SystemVerilog Parser
 
+* [Documentation](https://sv-simpleparser.readthedocs.io/en/stable/)
 * [PyPI](https://pypi.org/project/sv-simpleparser/)
 * [Sources](https://github.com/ericsmacedo/sv-simpleparser)
 * [Issues](https://github.com/ericsmacedo/sv-simpleparser/issues)
@@ -39,11 +40,4 @@ Installing it is pretty easy:
 
 ```bash
 pip install sv-simpleparser
-```
-
-## Usage
-
-```bash
-# Dump Markdown Table
-sv-simpleparser info examples/adder.sv
 ```
