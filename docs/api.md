@@ -22,8 +22,8 @@
     ...         for con in inst.connections:
     ...             print("    ", con.port, con.con, con.comment)
     'adder'
-       Param(ptype='integer', name='DATA_WIDTH', dim='', dim_unpacked='', ifdefs=(), comment=())
-       Param(ptype='integer', name='TEST', dim='', dim_unpacked='', ifdefs=(), comment=())
+       Param(ptype='integer', name='DATA_WIDTH', dim='', dim_unpacked='', default='', ifdefs=(), comment=())
+       Param(ptype='integer', name='TEST', dim='', dim_unpacked='', default='', ifdefs=(), comment=())
        Port(direction='input', ptype='', dtype='unsigned', name='A', dim='[DATA_WIDTH-1:0]', dim_unpacked='', ifdefs=(), comment=('This is a test', 'This is another test'))
        Port(direction='input', ptype='', dtype='unsigned', name='B', dim='[DATA_WIDTH-1:0]', dim_unpacked='', ifdefs=(), comment=())
        Port(direction='output', ptype='', dtype='unsigned', name='X', dim='[DATA_WIDTH:0]', dim_unpacked='', ifdefs=(), comment=())

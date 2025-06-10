@@ -80,6 +80,7 @@ class Param(_BaseModel):
     name: str
     dim: str = ""
     dim_unpacked: str = ""
+    default: str = ""
     ifdefs: tuple[str, ...] = ()
     comment: tuple[str, ...] = ()
 
