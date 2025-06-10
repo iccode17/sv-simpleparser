@@ -29,6 +29,7 @@ nav:
   - Home:
       - Welcome to SV-SIMPLEPARSER: index.md
       - Contributing: contributing.md
+  - Usage: usage.md
   - API:
       - Overview: api.md
       - Parser: api-parser.md
@@ -65,6 +66,7 @@ plugins:
             - https://docs.python.org/3/objects.inv
 
 markdown_extensions:
+  - admonition
   - attr_list
   - mkdocs-click
   - pymdownx.details

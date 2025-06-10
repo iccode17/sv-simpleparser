@@ -27,7 +27,7 @@ from pathlib import Path
 from click.testing import CliRunner
 from pytest import fixture
 
-EXAMPLES_PATH = Path(__file__).parent / "svfiles_examples"
+EXAMPLES_PATH = Path(__file__).parent.parent / "examples"
 EXAMPLES = tuple(sorted(EXAMPLES_PATH.glob("*.sv")))
 
 
@@ -40,7 +40,7 @@ def project_root() -> Path:
 @fixture
 def examples() -> Path:
     """Path to Examples."""
-    return Path(__file__).parent / "svfiles_examples"
+    return EXAMPLES_PATH
 
 
 @fixture

@@ -20,10 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Easy-To-Use SystemVerilog Parser."""
+"""Easy-To-Use SystemVerilog Parser.
+
+Usage is simple. Parse your input with one of these methods:
+
+* [sv_simpleparser.parse_file][]
+* [sv_simpleparser.parse_text][]
+
+You receive a [sv_simpleparser.File][] object holding all information.
+"""
 
 from .datamodel import File, Module, ModuleInstance, Param, Port
-from .parser import parse_file
+from .parser import parse_file, parse_text
 
 __all__ = [
     "File",
@@ -32,4 +40,5 @@ __all__ = [
     "Param",
     "Port",
     "parse_file",
+    "parse_text",
 ]

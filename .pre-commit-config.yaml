@@ -1,4 +1,4 @@
-exclude: ^(tests/refdata/.*)$
+exclude: ^(tests/refdata/.*)|(examples/.*)$
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.

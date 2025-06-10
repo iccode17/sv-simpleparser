@@ -64,6 +64,19 @@ def test_info(tmp_path, runner, example):
     assert_refdata(test_info, tmp_path, flavor=example.name)
 
 
+@mark.parametrize("example", EXAMPLES)
+def test_json(tmp_path, runner, example):
+    """Test json Command."""
+    with runner.isolated_filesystem():
+        # Run the command
+        result = runner.invoke(cli, ["json", str(example)])
+
+        assert result.exit_code == 0
+        (tmp_path / "output.json").write_text(result.output)
+
+    assert_refdata(test_info, tmp_path, flavor=example.name)
+
+
 def test_cli_help_smoke():
     """Test that help command works."""
     runner = CliRunner()

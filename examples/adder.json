@@ -1,5 +1,5 @@
 {
-  "path": "$PRJ/examples/adder.sv",
+  "path": "examples/adder.sv",
   "modules": [
     {
       "name": "adder",

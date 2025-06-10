@@ -1,5 +1,5 @@
 {
-  "path": "$PRJ/tests/svfiles_examples/encoder_using_case.sv",
+  "path": "$PRJ/examples/encoder_using_case.sv",
   "modules": [
     {
       "name": "encoder_using_case",
