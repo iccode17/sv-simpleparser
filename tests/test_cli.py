@@ -34,6 +34,7 @@ from .conftest import EXAMPLES_PATH
 EXAMPLES = (
     EXAMPLES_PATH / "param_module.sv",
     EXAMPLES_PATH / "adder.sv",
+    EXAMPLES_PATH / "bcd_adder.sv",
 )
 
 
