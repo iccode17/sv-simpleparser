@@ -8,13 +8,13 @@
           "direction": "input",
           "ptype": null,
           "name": "a",
-          "width": "[3:0]"
+          "dim": "[3:0]"
         },
         {
           "direction": "input",
           "ptype": null,
           "name": "b",
-          "width": "[3:0]"
+          "dim": "[3:0]"
         },
         {
           "direction": "input",
@@ -25,7 +25,7 @@
           "direction": "output",
           "ptype": null,
           "name": "sum",
-          "width": "[3:0]"
+          "dim": "[3:0]"
         },
         {
           "direction": "output",

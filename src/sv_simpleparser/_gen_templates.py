@@ -25,6 +25,8 @@ from importlib.resources import files
 from jinja2 import Environment, FileSystemLoader
 from rich.table import Table, box
 
+from .datamodel import Module
+
 template_path = files("sv_simpleparser.Templates")
 
 
@@ -46,28 +48,16 @@ def gen_instance(mod):
     return instance_file
 
 
-def remove_slashes_and_newlines(input_string):
-    # Replace '//' with an empty string
-    result = input_string.replace("//", "")
-    # Replace '\n' with an empty string
-    result = result.replace("\n", "")
-    return result.strip()
+def gen_markdown_table(mod: Module) -> Table:
+    table = Table(title=f"`{mod.name}` Interface", box=box.MARKDOWN)
 
-
-def gen_markdown_table(mod):
-    port_lst = [port.name for port in mod.ports]
-    direction_lst = [port.direction for port in mod.ports]
-    width_lst = [port.width if port.width else "1" for port in mod.ports]
-    cmt_lst = [port.comment[0] if isinstance(port.comment, list) and port.comment else None for port in mod.ports]
-
-    table = Table(title=f"{mod.name} interface", box=box.MARKDOWN)
-
-    table.add_column("Signal Name", no_wrap=True)
+    table.add_column("Name", no_wrap=True)
     table.add_column("Width", no_wrap=True)
     table.add_column("I/O", no_wrap=True)
     table.add_column("Functional Description")
 
-    for port, width, direction, comment in zip(port_lst, width_lst, direction_lst, cmt_lst, strict=True):
-        table.add_row(port, width, direction, comment)
+    for port in mod.ports:
+        dim = port.dim or "1"
+        table.add_row(f"`{port.name}`", f"`{dim}`", f"`{port.direction}`", "\n".join(port.comment or ()))
 
     return table

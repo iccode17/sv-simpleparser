@@ -142,10 +142,9 @@ def gen_sv_instance(ctx, file_path):  # noqa: ARG001
 @cli.command()
 @arg_filepath
 @pass_ctx
-def info(ctx, file_path: Path):
+def info(ctx: Ctx, file_path: Path) -> None:
     """Outputs information about a SV file."""
     file = parse_file(file_path)
-
     for module in file.modules:
         table = gen_markdown_table(module)
         ctx.console.print(table)

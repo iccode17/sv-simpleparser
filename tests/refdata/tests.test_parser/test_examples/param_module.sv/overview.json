@@ -7,7 +7,7 @@
         {
           "name": "WIDTH",
           "comment": [
-            "// Width of the input data\n"
+            "Width of the input data"
           ]
         },
         {
@@ -15,7 +15,7 @@
         },
         {
           "name": "INIT_VAL",
-          "width": "[7:0]"
+          "dim": "[7:0]"
         },
         {
           "ptype": "logic",
@@ -33,29 +33,29 @@
           "ptype": "wire",
           "name": "rst_n",
           "comment": [
-            "// active-low reset\n"
+            "active-low reset"
           ]
         },
         {
           "direction": "input",
           "ptype": "wire",
           "name": "data_in",
-          "width": "[WIDTH-1:0]",
+          "dim": "[WIDTH-1:0]",
           "comment": [
-            "// Input data\n"
+            "Input data"
           ]
         },
         {
           "direction": "output",
           "ptype": "reg",
           "name": "data_out",
-          "width": "[WIDTH-1:0]"
+          "dim": "[WIDTH-1:0]"
         },
         {
           "direction": "inout",
           "ptype": "wire",
           "name": "bidir_bus",
-          "width": "[DEPTH-1:0]"
+          "dim": "[DEPTH-1:0]"
         }
       ],
       "insts": [
@@ -77,7 +77,7 @@
         },
         {
           "name": "INIT_VALUE",
-          "width": "[7:0]"
+          "dim": "[7:0]"
         }
       ],
       "ports": [
@@ -95,19 +95,19 @@
           "direction": "input",
           "ptype": "wire",
           "name": "input_data",
-          "width": "[DATA_WIDTH-1:0]"
+          "dim": "[DATA_WIDTH-1:0]"
         },
         {
           "direction": "output",
           "ptype": "wire",
           "name": "output_data",
-          "width": "[DATA_WIDTH-1:0]"
+          "dim": "[DATA_WIDTH-1:0]"
         },
         {
           "direction": "inout",
           "ptype": "wire",
           "name": "config_bus",
-          "width": "[DATA_WIDTH/2-1:0]"
+          "dim": "[DATA_WIDTH/2-1:0]"
         }
       ]
     }

@@ -133,6 +133,10 @@ class _ParamDeclaration:
                 self.comment.append(string)
 
 
+def _normalize_comments(comment: list[str]) -> tuple[str, ...]:
+    return tuple(line.removeprefix("//").strip() for line in comment or ())
+
+
 class _SvModule:
     """Represents a complete SystemVerilog module with all its components.
 
@@ -160,14 +164,18 @@ class _SvModule:
         for decl in self.port_decl:
             for name in decl.name:
                 port = dm.Port(
-                    name=name, direction=decl.direction, ptype=decl.ptype, width=decl.width, comment=decl.comment
+                    name=name,
+                    direction=decl.direction,
+                    ptype=decl.ptype,
+                    dim=decl.width,
+                    comment=_normalize_comments(decl.comment),
                 )
                 self.port_lst.append(port)
 
     def _gen_param_lst(self):
         for decl in self.param_decl:
             for name in decl.name:
-                param = dm.Param(name=name, ptype=decl.ptype, width=decl.width, comment=decl.comment)
+                param = dm.Param(name=name, ptype=decl.ptype, dim=decl.width, comment=_normalize_comments(decl.comment))
                 self.param_lst.append(param)
 
     def _gen_inst_dict(self):
