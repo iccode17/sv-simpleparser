@@ -148,3 +148,11 @@ def info(ctx: Ctx, file_path: Path) -> None:
     for module in file.modules:
         table = gen_markdown_table(module)
         ctx.console.print(table)
+
+
+@cli.command()
+@arg_filepath
+def json(file_path: Path) -> None:
+    """Dump All Extracted Information in a JSON file."""
+    file = parse_file(file_path)
+    print(file.overview)

@@ -45,6 +45,12 @@ checktypes: .venv/.valid ## [ALL] Run Type-Checking via 'mypy'
 	${ENV} mypy .
 
 
+.PHONY: examples
+examples: .venv/.valid ## [ALL] Run Examples
+	${ENV} sv-simpleparser info examples/adder.sv > examples/adder.md
+	${ENV} sv-simpleparser json examples/adder.sv > examples/adder.json
+
+
 .PHONY: doc
 doc: .venv/.valid ## [ALL] Build Documentation via 'mkdocs'
 	${ENV} mkdocs build --strict

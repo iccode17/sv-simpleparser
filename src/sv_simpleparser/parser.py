@@ -251,6 +251,9 @@ def parse_text(text: str, file_path: Path | str | None = None) -> dm.File:
         for mod in module_lst
     )
 
+    if not modules:
+        raise RuntimeError("No module found.")
+
     return dm.File(path=file_path, modules=modules)
 
 
