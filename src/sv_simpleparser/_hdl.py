@@ -718,6 +718,8 @@ class SystemVerilogLexer(ExtendedRegexLexer):
         "module_body": [
             (r"`\w+\s*\(.*?\)", Module.Other),
             (r"\bendmodule\b", Module.ModuleEnd, "#pop"),
+            include("comments"),
+            include("ifdef"),
             (words(("input", "output", "inout"), prefix=r"\b", suffix=r"\b"), Port.PortDirection, "port_declaration"),
             (r"\bparameter\b", Module.Param, "param_declaration"),
             (r"\bbegin\b", Token.Begin, "begin"),
@@ -741,6 +743,7 @@ class SystemVerilogLexer(ExtendedRegexLexer):
         ],
         "module_header": [
             include("comments"),
+            include("ifdef"),
             (r"\bimport\b.*?;", Module.Other),  # Package import declaration
             (r"\bparameter\b", Module.Param, "param_declaration"),  # Parameter declaration
             (
@@ -755,6 +758,7 @@ class SystemVerilogLexer(ExtendedRegexLexer):
         ],
         "port_declaration": [
             include("port_comments"),
+            include("ifdef"),
             (port_types, Port.PortType),
             (r"((\[[^]]+\])+)", Port.PortWidth),  # Match one or more brackets, indicating the port width
             # port declaration ends with a ;, a ); or with the start of another port declaration
@@ -770,8 +774,9 @@ class SystemVerilogLexer(ExtendedRegexLexer):
             default("#pop"),
         ],
         "param_declaration": [
-            (r"`\w+\s*\(.*?\)", Module.Other),
             include("param_comments"),
+            include("ifdef"),
+            (r"`\w+\s*\(.*?\)", Module.Other),
             (port_types, Module.Param.ParamType),
             # Match one or more brackets, indicating the param width
             (r"((\[[^]]+\])+)", Module.Param.ParamWidth),
@@ -802,6 +807,13 @@ class SystemVerilogLexer(ExtendedRegexLexer):
             (r"(\\)(\n)", bygroups(String.Escape, Whitespace)),  # line continuation
             (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", Module.Param.Comment),
             (r"/(\\\n)?[*](.|\n)*?[*](\\\n)?/", Module.Param.Comment),
+        ],
+        "ifdef": [
+            (r"(`ifdef)\s+([a-zA-Z_]\w*)", bygroups(Comment.Preproc, Module.IFDEF.IFDEF)),
+            (r"(`ifndef)\s+([a-zA-Z_]\w*)", bygroups(Comment.Preproc, Module.IFDEF.IFNDEF)),
+            (r"(`else)", Module.IFDEF.ELSE),
+            (r"(`elsif)\s+([a-zA-Z_]\w*)", bygroups(Comment.Preproc, Module.IFDEF.ELSIF)),
+            (r"(`endif)", Module.IFDEF.ENDIF),
         ],
         # "comments": [
         #    (r"\s+", Whitespace),

@@ -82,8 +82,9 @@ class _PortDeclaration:
     dim: str | None = None
     dim_unpacked: str | None = None
     comment: list[str] | None = None
+    ifdefs: list[str] | None = None
 
-    def proc_tokens(self, token, string):
+    def proc_tokens(self, token, string, ifdefs):
         """Processes Module.Port tokens and extract data."""
         if token == Module.Port.PortDirection:
             self.direction = string
@@ -92,6 +93,7 @@ class _PortDeclaration:
         elif token == Module.Port.PortName:
             if self.name is None:
                 self.name = [string]
+                self.ifdefs = ifdefs
             else:
                 self.name.append(string)
         elif token == Module.Port.PortWidth:
@@ -123,19 +125,22 @@ class _ParamDeclaration:
     dim: str | None = None
     dim_unpacked: str | None = None
     comment: list[str] | None = None
+    ifdefs: list[str] | None = None
 
-    def proc_tokens(self, token, string):
+    def proc_tokens(self, token, string, ifdefs):
         """Processes Module.Param tokens and extract data."""
         if token == Module.Param.ParamType:
             self.ptype = string
         elif token == Module.Param.ParamName:
             if self.name is None:
                 self.name = [string]
+                self.ifdefs = ifdefs
             else:
                 self.name.append(string)
         elif token == Module.Param.ParamWidth:
             if self.name is None:
                 self.dim = string
+                self.ifdefs = ifdefs
             elif self.dim_unpacked is None:
                 self.dim_unpacked = string
         elif token == Module.Param.Comment:
@@ -164,6 +169,12 @@ def _normalize_connections(lines: str) -> Iterator[dm.Connection]:
         yield dm.Connection(**data)  # type: ignore[arg-type]
 
 
+def _flip_ifdef(param):
+    if param.startswith("!"):
+        return param[1:]  # Removes '!' prefix
+    return f"!{param}"  # Adds '!' prefix
+
+
 class _SvModule:
     """Represents a complete SystemVerilog module with all its components.
 
@@ -186,6 +197,8 @@ class _SvModule:
         self.port_decl: list[_PortDeclaration] = []
         self.param_decl: list[_ParamDeclaration] = []
         self.inst_decl: list[_ModInstance] = []
+        self.ifdefs_stack: list = []
+        self.ifdefs_pop_stack: list = []
 
     def _gen_port_lst(self):
         for decl in self.port_decl:
@@ -201,6 +214,7 @@ class _SvModule:
                     dim=decl.dim or "",
                     dim_unpacked=decl.dim_unpacked or "",
                     comment=_normalize_comments(decl.comment),
+                    ifdefs=tuple(decl.ifdefs),
                 )
                 self.port_lst.append(port)
 
@@ -213,6 +227,7 @@ class _SvModule:
                     dim=decl.dim or "",
                     dim_unpacked=decl.dim_unpacked or "",
                     comment=_normalize_comments(decl.comment),
+                    ifdefs=tuple(decl.ifdefs),
                 )
                 self.param_lst.append(param)
 
@@ -220,20 +235,45 @@ class _SvModule:
         for decl in self.inst_decl:
             self.inst_dict[decl.name] = decl.module
 
+    def proc_ifdef(self, token, string):
+        # Process the ifdef stack list
+        if token[-1] == "IFDEF":
+            self.ifdefs_stack.append(string)
+        elif token[-1] == "IFNDEF":
+            self.ifdefs_stack.append(_flip_ifdef(string))
+        elif token[-1] == "ELSIF":
+            self.ifdefs_stack[-1] = _flip_ifdef(self.ifdefs_stack[-1])
+            self.ifdefs_stack.append(string)
+        elif token[-1] == "ELSE":
+            self.ifdefs_stack[-1] = _flip_ifdef(self.ifdefs_stack[-1])
+        elif token[-1] == "ENDIF":
+            del self.ifdefs_stack[-self.ifdefs_pop_stack[-1] :]
+
+        # Process the pop stack list
+        if token[-1] in ["IFDEF", "IFNDEF"]:
+            self.ifdefs_pop_stack.append(1)
+        elif token[-1] in ["ELSIF"]:
+            self.ifdefs_pop_stack[-1] += 1
+        elif token[-1] in ["ENDIF"]:
+            del self.ifdefs_pop_stack[-1]
+
+        LOGGER.debug(f"IFDEF stack: {self.ifdefs_stack}")
+        LOGGER.debug(f"IFDEF stack: {self.ifdefs_pop_stack}")
+
     def proc_tokens(self, token, string):
         # Capture a new port declaration object if input/output keywords are found
         if token[:2] == ("Module", "Port"):
             if token[-1] == ("PortDirection"):
                 self.port_decl.append(_PortDeclaration(direction=string))
             else:
-                self.port_decl[-1].proc_tokens(token, string)
+                self.port_decl[-1].proc_tokens(token, string, self.ifdefs_stack.copy())
 
         # Capture parameters, when Module.Param tokens are found
         elif token[:2] == ("Module", "Param"):
             if token is Module.Param:
                 self.param_decl.append(_ParamDeclaration())
             else:
-                self.param_decl[-1].proc_tokens(token, string)
+                self.param_decl[-1].proc_tokens(token, string, self.ifdefs_stack.copy())
 
         # Capture Modules
         elif token[:2] == ("Module", "ModuleName"):
@@ -245,6 +285,9 @@ class _SvModule:
                 self.inst_decl.append(_ModInstance(module=string))
             else:
                 self.inst_decl[-1].proc_tokens(token, string)
+
+        elif token[:2] == ("Module", "IFDEF"):
+            self.proc_ifdef(token, string)
 
 
 def parse_file(file_path: Path | str) -> dm.File:
