@@ -12,12 +12,10 @@
         },
         {
           "direction": "input",
-          "ptype": null,
           "name": "clock"
         },
         {
           "direction": "input",
-          "ptype": null,
           "name": "reset"
         }
       ]
