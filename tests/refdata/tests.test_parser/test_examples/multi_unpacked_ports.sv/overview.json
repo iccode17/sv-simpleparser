@@ -93,7 +93,37 @@
       "insts": [
         {
           "name": "dut",
-          "module": "multi_unpacked_ports"
+          "module": "multi_unpacked_ports",
+          "connections": [
+            {
+              "port": "data_in",
+              "con": "data_in"
+            },
+            {
+              "port": "data_out",
+              "con": "data_out"
+            },
+            {
+              "port": "mem_a",
+              "con": "mem_a"
+            },
+            {
+              "port": "mem_b",
+              "con": "mem_b"
+            },
+            {
+              "port": "result_x",
+              "con": "result_x"
+            },
+            {
+              "port": "result_y",
+              "con": "result_y"
+            },
+            {
+              "port": "packed_unpacked",
+              "con": "packed_unpacked"
+            }
+          ]
         }
       ]
     }
