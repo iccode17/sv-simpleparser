@@ -1,8 +1,3 @@
-                     `bcd_adder` Parameters                      
-                                                                 
-| Name | Packed Width | Unpacked Width | Functional Description |
-|------|--------------|----------------|------------------------|
-                                                                 
                             `bcd_adder` Interface                             
                                                                               
 | Name   | Packed Width | Unpacked Width | I/O      | Functional Description |
@@ -13,11 +8,6 @@
 | `sum`  | `[3:0]`      |                | `output` |                        |
 | `cout` | `1`          |                | `output` |                        |
                                                                               
-                    `tb_bcdadder` Parameters                     
-                                                                 
-| Name | Packed Width | Unpacked Width | Functional Description |
-|------|--------------|----------------|------------------------|
-                                                                 
                         `tb_bcdadder` Interface                        
                                                                        
 | Name | Packed Width | Unpacked Width | I/O | Functional Description |

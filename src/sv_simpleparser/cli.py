@@ -147,7 +147,7 @@ def info(ctx: Ctx, file_path: Path) -> None:
     file = parse_file(file_path)
     for module in file.modules:
         table_io, table_param = gen_markdown_table(module)
-        ctx.console.print(table_param)
+        # ctx.console.print(table_param)
         ctx.console.print(table_io)
 
 

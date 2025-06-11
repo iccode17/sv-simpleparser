@@ -1,10 +1,3 @@
-                           `adder` Parameters                            
-                                                                         
-| Name         | Packed Width | Unpacked Width | Functional Description |
-|--------------|--------------|----------------|------------------------|
-| `DATA_WIDTH` |              |                |                        |
-| `TEST`       |              |                |                        |
-                                                                         
                                `adder` Interface                                
                                                                                 
 |      |                    |                |          | Functional           |
