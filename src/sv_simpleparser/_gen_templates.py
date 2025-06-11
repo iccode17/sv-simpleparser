@@ -52,26 +52,24 @@ def gen_markdown_table(mod: Module) -> tuple[Table, Table]:
     table = Table(title=f"`{mod.name}` Interface", box=box.MARKDOWN)
 
     table.add_column("Name", no_wrap=True)
-    table.add_column("Packed Width", no_wrap=True)
-    table.add_column("Unpacked Width", no_wrap=True)
+    table.add_column("Dimension", no_wrap=True)
     table.add_column("I/O", no_wrap=True)
     table.add_column("Functional Description")
 
     table_param = Table(title=f"`{mod.name}` Parameters", box=box.MARKDOWN)
 
     table_param.add_column("Name", no_wrap=True)
-    table_param.add_column("Packed Width", no_wrap=True)
-    table_param.add_column("Unpacked Width", no_wrap=True)
+    table_param.add_column("Dimension", no_wrap=True)
     table_param.add_column("Functional Description")
 
     for port in mod.ports:
         dim = port.dim or "1"
-        dim_unpacked = f"`{port.dim_unpacked}`" if port.dim_unpacked else ""
-        table.add_row(f"`{port.name}`", f"`{dim}`", dim_unpacked, f"`{port.direction}`", "\n".join(port.comment or ()))
+        port_name = f"{port.name} {port.dim_unpacked}" if port.dim_unpacked else port.name
+        table.add_row(f"`{port_name}`", f"`{dim}`", f"`{port.direction}`", "\n".join(port.comment or ()))
 
     for param in mod.params:
+        param_name = f"{param.name} {param.dim_unpacked}" if param.dim_unpacked else param.name
         dim = f"`{param.dim}`" if param.dim else ""
-        dim_unpacked = f"`{param.dim_unpacked}`" if param.dim_unpacked else ""
-        table_param.add_row(f"`{param.name}`", dim, dim_unpacked, "\n".join(param.comment or ()))
+        table_param.add_row(f"`{param_name}`", dim, "\n".join(param.comment or ()))
 
     return table, table_param
