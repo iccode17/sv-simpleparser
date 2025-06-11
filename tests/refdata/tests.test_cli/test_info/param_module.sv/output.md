@@ -1,6 +1,15 @@
+                `param_module` Parameters                 
+                                                          
+| Name             | Dimension | Functional Description  |
+|------------------|-----------|-------------------------|
+| `WIDTH`          |           | Width of the input data |
+| `DEPTH`          |           |                         |
+| `INIT_VAL`       | `[7:0]`   |                         |
+| `ENABLE_FEATURE` |           |                         |
+                                                          
                      `param_module` Interface                      
                                                                    
-| Name        | Width         | I/O      | Functional Description |
+| Name        | Dimension     | I/O      | Functional Description |
 |-------------|---------------|----------|------------------------|
 | `clk`       | `1`           | `input`  |                        |
 | `rst_n`     | `1`           | `input`  | active-low reset       |
@@ -8,9 +17,16 @@
 | `data_out`  | `[WIDTH-1:0]` | `output` |                        |
 | `bidir_bus` | `[DEPTH-1:0]` | `inout`  |                        |
                                                                    
+               `sub_module` Parameters               
+                                                     
+| Name         | Dimension | Functional Description |
+|--------------|-----------|------------------------|
+| `DATA_WIDTH` |           |                        |
+| `INIT_VALUE` | `[7:0]`   |                        |
+                                                     
                            `sub_module` Interface                           
                                                                             
-| Name          | Width                | I/O      | Functional Description |
+| Name          | Dimension            | I/O      | Functional Description |
 |---------------|----------------------|----------|------------------------|
 | `clk`         | `1`                  | `input`  |                        |
 | `reset`       | `1`                  | `input`  |                        |

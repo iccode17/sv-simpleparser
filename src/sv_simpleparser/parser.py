@@ -72,14 +72,15 @@ class _PortDeclaration:
         direction: Port direction ('input', 'output', 'inout')
         ptype: Port type ('wire', 'reg', 'logic', etc.)
         name: List of port names in this declaration
-        width: Bus width specification if applicable
+        dim: Bus dim specification if applicable
         comment: List of associated comments
     """
 
     direction: str
     ptype: str | None = None
     name: list[str] | None = None
-    width: str | None = None
+    dim: str | None = None
+    dim_unpacked: str | None = None
     comment: list[str] | None = None
 
     def proc_tokens(self, token, string):
@@ -94,7 +95,11 @@ class _PortDeclaration:
             else:
                 self.name.append(string)
         elif token == Module.Port.PortWidth:
-            self.width = string
+            # The dimension is packed if name is none, and unpacked if it is not None
+            if self.name is None:
+                self.dim = string
+            elif self.dim_unpacked is None:
+                self.dim_unpacked = string
         elif token == Module.Port.Comment:
             if self.comment is None:
                 self.comment = [string]
@@ -109,13 +114,14 @@ class _ParamDeclaration:
     Attributes:
         ptype: Parameter type ('integer', 'real', etc.)
         name: List of parameter names in this declaration
-        width: Bus width specification if applicable
+        dim: Bus dim specification if applicable
         comment: List of associated comments
     """
 
     ptype: str | None = None
     name: list[str] | None = None
-    width: str | None = None
+    dim: str | None = None
+    dim_unpacked: str | None = None
     comment: list[str] | None = None
 
     def proc_tokens(self, token, string):
@@ -128,7 +134,10 @@ class _ParamDeclaration:
             else:
                 self.name.append(string)
         elif token == Module.Param.ParamWidth:
-            self.width = string
+            if self.name is None:
+                self.dim = string
+            elif self.dim_unpacked is None:
+                self.dim_unpacked = string
         elif token == Module.Param.Comment:
             if self.comment is None:
                 self.comment = [string]
@@ -189,7 +198,8 @@ class _SvModule:
                     direction=decl.direction,
                     ptype=ptype,
                     dtype=dtype,
-                    dim=decl.width or "",
+                    dim=decl.dim or "",
+                    dim_unpacked=decl.dim_unpacked or "",
                     comment=_normalize_comments(decl.comment),
                 )
                 self.port_lst.append(port)
@@ -198,7 +208,11 @@ class _SvModule:
         for decl in self.param_decl:
             for name in decl.name:
                 param = dm.Param(
-                    name=name, ptype=decl.ptype or "", dim=decl.width or "", comment=_normalize_comments(decl.comment)
+                    name=name,
+                    ptype=decl.ptype or "",
+                    dim=decl.dim or "",
+                    dim_unpacked=decl.dim_unpacked or "",
+                    comment=_normalize_comments(decl.comment),
                 )
                 self.param_lst.append(param)
 

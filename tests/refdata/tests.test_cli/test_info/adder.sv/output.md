@@ -1,6 +1,13 @@
+                 `adder` Parameters                  
+                                                     
+| Name         | Dimension | Functional Description |
+|--------------|-----------|------------------------|
+| `DATA_WIDTH` |           |                        |
+| `TEST`       |           |                        |
+                                                     
                         `adder` Interface                        
                                                                  
-| Name | Width              | I/O      | Functional Description |
+| Name | Dimension          | I/O      | Functional Description |
 |------|--------------------|----------|------------------------|
 | `A`  | `[DATA_WIDTH-1:0]` | `input`  | This is a test         |
 |      |                    |          | This is another test   |

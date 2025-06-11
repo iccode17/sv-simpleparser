@@ -14,11 +14,12 @@
         },
         {
           "name": "P_UNPACK",
-          "dim": "[4:0]"
+          "dim_unpacked": "[4:0]"
         },
         {
           "name": "P_VEC_UNPACK",
-          "dim": "[4:0]"
+          "dim": "[3:0]",
+          "dim_unpacked": "[4:0]"
         }
       ],
       "ports": [
@@ -35,12 +36,13 @@
         {
           "direction": "input",
           "name": "unpack_i",
-          "dim": "[4:0]"
+          "dim_unpacked": "[4:0]"
         },
         {
           "direction": "input",
           "name": "vec_unpack_i",
-          "dim": "[4:0]"
+          "dim": "[3:0]",
+          "dim_unpacked": "[4:0]"
         },
         {
           "direction": "output",
