@@ -29,7 +29,7 @@ import pydantic as pyd
 
 
 class _BaseModel(pyd.BaseModel):
-    model_config = pyd.ConfigDict(frozen=True)
+    model_config = pyd.ConfigDict(frozen=True, extra="forbid")
 
     @property
     def overview(self) -> str:
@@ -76,10 +76,12 @@ class Param(_BaseModel):
         comment: tuple of associated comments
     """
 
-    ptype: str | None = None
+    ptype: str = ""
     name: str
-    dim: str | None = None
+    dim: str = ""
     dim_unpacked: str = ""
+    default: str = ""
+    ifdefs: tuple[str, ...] = ()
     comment: tuple[str, ...] = ()
 
 
@@ -87,8 +89,9 @@ class Port(_BaseModel):
     """Represents a port in a SystemVerilog module.
 
     Attributes:
-        direction: Port direction ('input', 'output', 'inout')
-        ptype: Port type
+        direction: Port Direction
+        ptype: Port Type
+        dtype: Data Type
         name: Name of the port
         dim: Dimension (Packed)
         dim_unpacked: Unpacked
@@ -96,12 +99,26 @@ class Port(_BaseModel):
     """
 
     direction: Literal["input", "output", "inout"]
-    # TODO: reg/wire/logic and unsigned/signed are two different kinds of categories
-    #       right?, should they be separated?
-    ptype: Literal["reg", "wire", "logic", "unsigned", "signed"] | None
+    ptype: Literal["reg", "wire", "logic", ""] = ""
+    dtype: Literal["unsigned", "signed", ""] = ""
     name: str
-    dim: str | None = None
+    dim: str = ""
     dim_unpacked: str = ""
+    ifdefs: tuple[str, ...] = ()
+    comment: tuple[str, ...] = ()
+
+
+class Connection(_BaseModel):
+    """Connection.
+
+    Attributes:
+        port: Port
+        con: Connection
+        comment: Comment
+    """
+
+    port: str = ""
+    con: str = ""
     comment: tuple[str, ...] = ()
 
 
@@ -116,3 +133,4 @@ class ModuleInstance(_BaseModel):
 
     name: str
     module: str
+    connections: tuple[Connection, ...] = ()

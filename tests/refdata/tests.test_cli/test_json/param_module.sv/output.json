@@ -61,11 +61,54 @@
       "insts": [
         {
           "name": "u_sub_module",
-          "module": "sub_module"
+          "module": "sub_module",
+          "connections": [
+            {
+              "port": "clk",
+              "con": "clk"
+            },
+            {
+              "port": "reset",
+              "con": "rst_n"
+            },
+            {
+              "port": "input_data",
+              "con": "data_in"
+            },
+            {
+              "port": "output_data",
+              "con": "internal_wire"
+            },
+            {
+              "port": "config_bus",
+              "con": "bidir_bus"
+            }
+          ]
         },
         {
           "name": "u_sub_module2",
-          "module": "sub_module"
+          "module": "sub_module",
+          "connections": [
+            {
+              "port": "clk",
+              "con": "clk"
+            },
+            {
+              "port": "reset",
+              "con": "rst_n"
+            },
+            {
+              "port": "input_data",
+              "con": "data_in[3:0]"
+            },
+            {
+              "port": "output_data"
+            },
+            {
+              "port": "config_bus",
+              "con": "bidir_bus[1:0]"
+            }
+          ]
         }
       ]
     },
