@@ -60,6 +60,7 @@ def gen_markdown_table(mod: Module) -> tuple[Table, Table]:
 
     table_param.add_column("Name", no_wrap=True)
     table_param.add_column("Dimension", no_wrap=True)
+    table_param.add_column("Default", no_wrap=True)
     table_param.add_column("Functional Description")
 
     for port in mod.ports:
@@ -70,6 +71,7 @@ def gen_markdown_table(mod: Module) -> tuple[Table, Table]:
     for param in mod.params:
         param_name = f"{param.name} {param.dim_unpacked}" if param.dim_unpacked else param.name
         dim = f"`{param.dim}`" if param.dim else ""
-        table_param.add_row(f"`{param_name}`", dim, "\n".join(param.comment or ()))
+        default = f"`{param.default}`" if param.default else ""
+        table_param.add_row(f"`{param_name}`", dim, default, "\n".join(param.comment or ()))
 
     return table, table_param
