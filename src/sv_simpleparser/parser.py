@@ -31,7 +31,6 @@ The parser offers two methods:
 
 import logging
 import re
-from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -196,21 +195,6 @@ class _ParamDeclaration:
 
 def _normalize_comments(comment: list[str]) -> tuple[str, ...]:
     return tuple(line.replace("\n", " ").strip() for line in comment or ())
-
-
-def _normalize_connections(lines: str) -> Iterator[dm.Connection]:
-    # TODO: please use lexer for this hack!
-    for line in lines.splitlines():
-        line = line.strip()  # noqa: PLW2901
-        if not line:
-            continue
-        mat = RE_CON.match(line)
-        if not mat:
-            LOGGER.warning(f"Invalid connection: {line}")
-            continue
-        data = mat.groupdict()
-        data["comment"] = (data["comment"],) if data["comment"] else ()
-        yield dm.Connection(**data)  # type: ignore[arg-type]
 
 
 def _flip_ifdef(param):
