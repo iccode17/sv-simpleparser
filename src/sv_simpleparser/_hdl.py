@@ -614,6 +614,22 @@ def filter_instance_keywords_callback(lexer, match, ctx):  # noqa: ARG001
         ctx.pos = match.end()
 
 
+def comments_callback(lexer: ExtendedRegexLexer, match, ctx: LexerContext):  # noqa: ARG001
+    current_state = ctx.stack[-1]
+
+    # The actual comment is located at group 2
+    match_string = match.group(2)
+    match_start = match.start(0)
+
+    if current_state == "port_declaration":
+        yield match_start, Module.Port.Comment, match_string
+    elif current_state == "param_declaration":
+        yield match_start, Module.Param.Comment, match_string
+    else:
+        yield match_start, Comment, match_string
+    ctx.pos = match.end()
+
+
 class SystemVerilogLexer(ExtendedRegexLexer):
     """Extends verilog lexer to recognise all SystemVerilog keywords.
 
@@ -757,7 +773,7 @@ class SystemVerilogLexer(ExtendedRegexLexer):
             punctuation,
         ],
         "port_declaration": [
-            include("port_comments"),
+            include("comments"),
             include("ifdef"),
             (port_types, Port.PortType),
             (r"((\[[^]]+\])+)", Port.PortWidth),  # Match one or more brackets, indicating the port width
@@ -774,7 +790,7 @@ class SystemVerilogLexer(ExtendedRegexLexer):
             default("#pop"),
         ],
         "param_declaration": [
-            include("param_comments"),
+            include("comments"),
             include("ifdef"),
             (r"`\w+\s*\(.*?\)", Module.Other),
             (port_types, Module.Param.ParamType),
@@ -793,20 +809,8 @@ class SystemVerilogLexer(ExtendedRegexLexer):
         "comments": [
             (r"\s+", Whitespace),
             (r"(\\)(\n)", bygroups(String.Escape, Whitespace)),  # line continuation
-            (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", Comment.Single),
-            (r"/(\\\n)?[*](.|\n)*?[*](\\\n)?/", Comment.Multiline),
-        ],
-        "port_comments": [
-            (r"\s+", Whitespace),
-            (r"(\\)(\n)", bygroups(String.Escape, Whitespace)),  # line continuation
-            (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", Module.Port.Comment),
-            (r"/(\\\n)?[*](.|\n)*?[*](\\\n)?/", Module.Port.Comment),
-        ],
-        "param_comments": [
-            (r"\s+", Whitespace),
-            (r"(\\)(\n)", bygroups(String.Escape, Whitespace)),  # line continuation
-            (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", Module.Param.Comment),
-            (r"/(\\\n)?[*](.|\n)*?[*](\\\n)?/", Module.Param.Comment),
+            (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", comments_callback),
+            (r"/(\\\n)?[*]((.|\n)*?)[*](\\\n)?/", comments_callback),
         ],
         "ifdef": [
             (r"(`ifdef)\s+([a-zA-Z_]\w*)", bygroups(Comment.Preproc, Module.IFDEF.IFDEF)),
