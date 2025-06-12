@@ -47,3 +47,13 @@ def examples() -> Path:
 def runner() -> CliRunner:
     """CLI Runner."""
     return CliRunner()
+
+
+@fixture(autouse=True)
+def enforce_terminal_size(monkeypatch):
+    """Fix issue with varying terminal size."""
+
+    def get_terminal_size(*args, **kwargs):
+        return (120, 60)
+
+    monkeypatch.setattr("shutil.get_terminal_size", get_terminal_size)
