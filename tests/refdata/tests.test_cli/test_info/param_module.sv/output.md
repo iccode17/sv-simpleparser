@@ -1,12 +1,12 @@
-                `param_module` Parameters                 
-                                                          
-| Name             | Dimension | Functional Description  |
-|------------------|-----------|-------------------------|
-| `WIDTH`          |           | Width of the input data |
-| `DEPTH`          |           |                         |
-| `INIT_VAL`       | `[7:0]`   |                         |
-| `ENABLE_FEATURE` |           |                         |
-                                                          
+                     `param_module` Parameters                      
+                                                                    
+| Name             | Dimension | Default | Functional Description  |
+|------------------|-----------|---------|-------------------------|
+| `WIDTH`          |           | `8`     | Width of the input data |
+| `DEPTH`          |           | `4`     |                         |
+| `INIT_VAL`       | `[7:0]`   | `8'hFF` |                         |
+| `ENABLE_FEATURE` |           | `1'b1`  |                         |
+                                                                    
                      `param_module` Interface                      
                                                                    
 | Name        | Dimension     | I/O      | Functional Description |
@@ -17,13 +17,13 @@
 | `data_out`  | `[WIDTH-1:0]` | `output` |                        |
 | `bidir_bus` | `[DEPTH-1:0]` | `inout`  |                        |
                                                                    
-               `sub_module` Parameters               
-                                                     
-| Name         | Dimension | Functional Description |
-|--------------|-----------|------------------------|
-| `DATA_WIDTH` |           |                        |
-| `INIT_VALUE` | `[7:0]`   |                        |
-                                                     
+                    `sub_module` Parameters                    
+                                                               
+| Name         | Dimension | Default | Functional Description |
+|--------------|-----------|---------|------------------------|
+| `DATA_WIDTH` |           | `8`     |                        |
+| `INIT_VALUE` | `[7:0]`   | `0`     |                        |
+                                                               
                            `sub_module` Interface                           
                                                                             
 | Name          | Dimension            | I/O      | Functional Description |
