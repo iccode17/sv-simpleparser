@@ -777,14 +777,12 @@ class SystemVerilogLexer(ExtendedRegexLexer):
         "port_declaration": [
             include("comments"),
             include("ifdef"),
-            (port_types, Port.PortType),
+            (words(("signed", "unsigned"), suffix=r"\b", prefix=r"\b"), Port.Dtype),
+            (port_types, Port.Ptype),
             # Filter ports used for param declarations
             (r"((\[[^]]+\])+)", Port.PortWidth),  # Match one or more brackets, indicating the port width
             # port declaration ends with a ;, a ); or with the start of another port declaration
-            (
-                words(("input", "output", "inout"), suffix=r"\b", prefix=r"\b"),
-                Port.PortDirection,
-            ),
+            (words(("input", "output", "inout"), suffix=r"\b", prefix=r"\b"), Port.PortDirection),
             (r"\$?[a-zA-Z_]\w*", Port.PortName),
             (r"\)\s*;", Module.HeaderEnd, "#pop:2"),
             (r",", Punctuation),
