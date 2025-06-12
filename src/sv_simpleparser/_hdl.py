@@ -49,8 +49,8 @@ from ._token import Module, Port
 
 __all__ = ["SystemVerilogLexer"]
 
-# Create a logger for this module
-logger = logging.getLogger(__name__)
+# Create a LOGGER for this module
+LOGGER = logging.getLogger(__name__)
 
 punctuation = (r"[()\[\],.;\'$]", Punctuation)
 
@@ -605,13 +605,31 @@ def filter_instance_keywords_callback(lexer, match, ctx):  # noqa: ARG001
     if instance_name not in keywords_types_tup and module_name not in keywords_types_tup:
         yield match.start(1), Module.Body.Instance.Module, module_name
         yield match.start(2), Module.Body.Instance.Name, instance_name
-        yield match.start(3), Module.Body.Instance.Connections, connections
-        ctx.pos = match.end()
+        ctx.stack.append("instance_connections")
+        ctx.pos = match.end(2)
     else:
         yield match.start(1), Error, module_name
         yield match.start(2), Error, instance_name
         yield match.start(3), Error, connections
         ctx.pos = match.end()
+
+
+def comments_callback(lexer: ExtendedRegexLexer, match, ctx: LexerContext):  # noqa: ARG001
+    current_state = ctx.stack[-1]
+
+    # The actual comment is located at group 2
+    match_string = match.group(2)
+    match_start = match.start(0)
+
+    if current_state == "port_declaration":
+        yield match_start, Module.Port.Comment, match_string
+    elif current_state == "param_declaration":
+        yield match_start, Module.Param.Comment, match_string
+    elif current_state == "instance_connections":
+        yield match_start, Module.Body.Instance.Con.Comment, match_string
+    else:
+        yield match_start, Comment, match_string
+    ctx.pos = match.end()
 
 
 class SystemVerilogLexer(ExtendedRegexLexer):
@@ -757,15 +775,15 @@ class SystemVerilogLexer(ExtendedRegexLexer):
             punctuation,
         ],
         "port_declaration": [
-            include("port_comments"),
+            include("comments"),
             include("ifdef"),
             (port_types, Port.PortType),
+            # Filter ports used for param declarations
             (r"((\[[^]]+\])+)", Port.PortWidth),  # Match one or more brackets, indicating the port width
             # port declaration ends with a ;, a ); or with the start of another port declaration
             (
                 words(("input", "output", "inout"), suffix=r"\b", prefix=r"\b"),
                 Port.PortDirection,
-                ("#pop", "port_declaration"),
             ),
             (r"\$?[a-zA-Z_]\w*", Port.PortName),
             (r"\)\s*;", Module.HeaderEnd, "#pop:2"),
@@ -774,14 +792,15 @@ class SystemVerilogLexer(ExtendedRegexLexer):
             default("#pop"),
         ],
         "param_declaration": [
-            include("param_comments"),
+            include("comments"),
             include("ifdef"),
+            # Filter macros used for param declarations
             (r"`\w+\s*\(.*?\)", Module.Other),
             (port_types, Module.Param.ParamType),
             # Match one or more brackets, indicating the param width
             (r"((\[[^]]+\])+)", Module.Param.ParamWidth),
             # param declaration ends with a ;, a ); or with the start of another port declaration
-            (r"\bparameter\b", Module.Param, ("#pop", "param_declaration")),
+            (r"\bparameter\b", Module.Param),
             (r"\blocalparam\b", Keyword, "#pop"),
             (r'=\s*([\d\'hHbBdxXzZ?_][\w\'hHbBdxXzZ]*|"[^"]*")', Punctuation),  # Filter parameter values
             (r"\$?[a-zA-Z_]\w*", Module.Param.ParamName),
@@ -793,20 +812,8 @@ class SystemVerilogLexer(ExtendedRegexLexer):
         "comments": [
             (r"\s+", Whitespace),
             (r"(\\)(\n)", bygroups(String.Escape, Whitespace)),  # line continuation
-            (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", Comment.Single),
-            (r"/(\\\n)?[*](.|\n)*?[*](\\\n)?/", Comment.Multiline),
-        ],
-        "port_comments": [
-            (r"\s+", Whitespace),
-            (r"(\\)(\n)", bygroups(String.Escape, Whitespace)),  # line continuation
-            (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", Module.Port.Comment),
-            (r"/(\\\n)?[*](.|\n)*?[*](\\\n)?/", Module.Port.Comment),
-        ],
-        "param_comments": [
-            (r"\s+", Whitespace),
-            (r"(\\)(\n)", bygroups(String.Escape, Whitespace)),  # line continuation
-            (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", Module.Param.Comment),
-            (r"/(\\\n)?[*](.|\n)*?[*](\\\n)?/", Module.Param.Comment),
+            (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", comments_callback),
+            (r"/(\\\n)?[*]((.|\n)*?)[*](\\\n)?/", comments_callback),
         ],
         "ifdef": [
             (r"(`ifdef)\s+([a-zA-Z_]\w*)", bygroups(Comment.Preproc, Module.IFDEF.IFDEF)),
@@ -815,6 +822,40 @@ class SystemVerilogLexer(ExtendedRegexLexer):
             (r"(`elsif)\s+([a-zA-Z_]\w*)", bygroups(Comment.Preproc, Module.IFDEF.ELSIF)),
             (r"(`endif)", Module.IFDEF.ENDIF),
         ],
+        "instance_connections": [
+            include("comments"),
+            # take if-defs into account
+            include("ifdef"),
+            # Filter macros used for port connections
+            (r"`\w+\s*\(.*?\)", Module.Other),
+            # autoconnect .*,
+            (r"\.[*]\s*,", Module.Body.Instance.Con.Autoconnect),
+            # .port(connection),
+            (
+                r"(\.)([a-zA-Z_]\w*)\s*\(\s*(.*?)\s*\)\s*,?",
+                bygroups(
+                    Module.Body.Instance.Con.Start, Module.Body.Instance.Con.Port, Module.Body.Instance.Con.Connection
+                ),
+            ),
+            # .port,
+            (
+                r"(\.)([a-zA-Z_]\w*)\s*,?",
+                bygroups(Module.Body.Instance.Con.Start, Module.Body.Instance.Con.PortConnection),
+            ),
+            # connection by order: (port_a, port_b, port_c);
+            (r"([a-zA-Z_]\w*)\s*,?", Module.Body.Instance.Con.OrderedConnection),
+            # capture same name connection, example: .clk, .rst_b,
+            (r"\s*\(\s*", Punctuation),
+            (r"\)\s*;", Punctuation, "#pop"),
+        ],
+        # "find_connection": [
+        #    include("comments"),
+        #    (r"\(\s*/\*.*?\*/\s*\)"),
+        #    (r"\(\s*/\*.*?\*/\s*\)"),
+        #    (r"\.[a-zA-Z_]\w*", Module.Instance.Port, "find_connection"),
+        #    (r"\.[a-zA-Z_]\w*,", bygroups(Module.Instance.Port, Module.Instance.PortConnection)),
+        #
+        # ],
         # "comments": [
         #    (r"\s+", Whitespace),
         #    (r"(\\)(\n)", bygroups(String.Escape, Whitespace)),  # line continuation
@@ -854,7 +895,7 @@ class SystemVerilogLexer(ExtendedRegexLexer):
                                 statetokens = tokendefs[ctx.stack[-1]]
                     # CAUTION: callback must set ctx.pos!
                     if new_state is not None:
-                        logger.debug(f"New State: {new_state}")
+                        LOGGER.debug(f"New State: {new_state}")
                         # state transition
                         if isinstance(new_state, tuple):
                             for state in new_state:
