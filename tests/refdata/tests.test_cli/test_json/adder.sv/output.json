@@ -91,13 +91,16 @@
           "connections": [
             {
               "port": "test_input",
-              "con": "a_port"
+              "con": "a_port",
+              "comment": [
+                "Connected to a_port"
+              ]
             },
             {
               "port": "test_output",
               "con": "b_port",
               "comment": [
-                " Connected to b_port"
+                "Connected to b_port"
               ]
             }
           ]

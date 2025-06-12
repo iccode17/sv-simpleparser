@@ -32,8 +32,8 @@
        Port(direction='input', ptype='logic', dtype='', name='flag_u', dim='', dim_unpacked='', ifdefs=(), comment=('Unpacked single bit',))
        Port(direction='input', ptype='logic', dtype='', name='arr_u', dim='[7:0]', dim_unpacked='[0:3]', ifdefs=(), comment=('Unpacked byte array',))
        test_module u_test_module
-         test_input a_port ()
-         test_output b_port (' Connected to b_port',)
+         test_input a_port ('Connected to a_port',)
+         test_output b_port ('Connected to b_port',)
 
     ```
 

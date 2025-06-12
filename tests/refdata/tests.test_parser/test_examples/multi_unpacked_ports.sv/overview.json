@@ -109,7 +109,10 @@
             },
             {
               "port": "mem_b",
-              "con": "mem_b"
+              "con": "mem_b",
+              "comment": [
+                "Unpacked ports connected in bulk"
+              ]
             },
             {
               "port": "result_x",
