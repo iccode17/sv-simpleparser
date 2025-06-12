@@ -151,7 +151,7 @@ class _ParamDeclaration:
 
 
 def _normalize_comments(comment: list[str]) -> tuple[str, ...]:
-    return tuple(line.removeprefix("//").strip() for line in comment or ())
+    return tuple(line.replace("\n", " ").strip() for line in comment or ())
 
 
 def _normalize_connections(lines: str) -> Iterator[dm.Connection]:
