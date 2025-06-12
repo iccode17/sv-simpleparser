@@ -6,20 +6,24 @@
       "params": [
         {
           "name": "WIDTH",
+          "default": "8",
           "comment": [
             "Width of the input data"
           ]
         },
         {
-          "name": "DEPTH"
+          "name": "DEPTH",
+          "default": "4"
         },
         {
           "name": "INIT_VAL",
-          "dim": "[7:0]"
+          "dim": "[7:0]",
+          "default": "8'hFF"
         },
         {
           "ptype": "logic",
-          "name": "ENABLE_FEATURE"
+          "name": "ENABLE_FEATURE",
+          "default": "1'b1"
         }
       ],
       "ports": [
@@ -116,11 +120,13 @@
       "name": "sub_module",
       "params": [
         {
-          "name": "DATA_WIDTH"
+          "name": "DATA_WIDTH",
+          "default": "8"
         },
         {
           "name": "INIT_VALUE",
-          "dim": "[7:0]"
+          "dim": "[7:0]",
+          "default": "0"
         }
       ],
       "ports": [

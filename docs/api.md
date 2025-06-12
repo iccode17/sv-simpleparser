@@ -22,8 +22,8 @@
     ...         for con in inst.connections:
     ...             print("    ", con.port, con.con, con.comment)
     'adder'
-       Param(ptype='integer', name='DATA_WIDTH', dim='', dim_unpacked='', default='', ifdefs=(), comment=('Width of input operands',))
-       Param(ptype='integer', name='OUTPUT_WIDTH', dim='', dim_unpacked='', default='', ifdefs=(), comment=('Test configuration value',))
+       Param(ptype='integer', name='DATA_WIDTH', dim='', dim_unpacked='', default='8', ifdefs=(), comment=('Width of input operands',))
+       Param(ptype='integer', name='OUTPUT_WIDTH', dim='', dim_unpacked='', default='4', ifdefs=(), comment=('Test configuration value',))
        Port(direction='input', ptype='logic', dtype='unsigned', name='A', dim='[DATA_WIDTH-1:0]', dim_unpacked='', ifdefs=(), comment=('Packed input operand A',))
        Port(direction='input', ptype='logic', dtype='unsigned', name='B', dim='[DATA_WIDTH-1:0]', dim_unpacked='', ifdefs=(), comment=('Packed input operand B',))
        Port(direction='output', ptype='logic', dtype='unsigned', name='X', dim='[DATA_WIDTH:0]', dim_unpacked='', ifdefs=(), comment=('Packed sum output',))

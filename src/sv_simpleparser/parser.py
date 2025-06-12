@@ -169,6 +169,7 @@ class _ParamDeclaration:
     dim_unpacked: str | None = None
     comment: list[str] | None = None
     ifdefs: list[str] | None = None
+    default: str = ""
 
     def proc_tokens(self, token, string, ifdefs):
         """Processes Module.Param tokens and extract data."""
@@ -191,10 +192,16 @@ class _ParamDeclaration:
                 self.comment = [string]
             else:
                 self.comment.append(string)
+        elif token == Module.Param.Value:
+            self.default += string
 
 
 def _normalize_comments(comment: list[str]) -> tuple[str, ...]:
     return tuple(line.replace("\n", " ").strip() for line in comment or ())
+
+
+def _normalize_defaults(default: str) -> str:
+    return default.rstrip("\n").strip()
 
 
 def _flip_ifdef(param):
@@ -253,6 +260,7 @@ class _SvModule:
                     dim=decl.dim or "",
                     dim_unpacked=decl.dim_unpacked or "",
                     comment=_normalize_comments(decl.comment),
+                    default=_normalize_defaults(decl.default),
                     ifdefs=tuple(decl.ifdefs),
                 )
                 self.param_lst.append(param)

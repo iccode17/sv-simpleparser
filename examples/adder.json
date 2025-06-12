@@ -7,6 +7,7 @@
         {
           "ptype": "integer",
           "name": "DATA_WIDTH",
+          "default": "8",
           "comment": [
             "Width of input operands"
           ]
@@ -14,6 +15,7 @@
         {
           "ptype": "integer",
           "name": "OUTPUT_WIDTH",
+          "default": "4",
           "comment": [
             "Test configuration value"
           ]
