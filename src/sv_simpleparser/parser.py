@@ -118,18 +118,21 @@ class _PortDeclaration:
 
     direction: str
     ptype: str | None = None
+    dtype: str | None = None
     name: list[str] | None = None
     dim: str | None = None
     dim_unpacked: str | None = None
     comment: list[str] | None = None
     ifdefs: list[str] | None = None
 
-    def proc_tokens(self, token, string, ifdefs):
+    def proc_tokens(self, token, string, ifdefs):  # noqa: C901
         """Processes Module.Port tokens and extract data."""
         if token == Module.Port.PortDirection:
             self.direction = string
-        elif token == Module.Port.PortType:
+        elif token == Module.Port.Ptype:
             self.ptype = string
+        elif token == Module.Port.Dtype:
+            self.dtype = string
         elif token == Module.Port.PortName:
             if self.name is None:
                 self.name = [string]
@@ -229,14 +232,11 @@ class _SvModule:
     def _gen_port_lst(self):
         for decl in self.port_decl:
             for name in decl.name:
-                # TODO: maybe split in parser and not in post-processing
-                ptype = decl.ptype if decl.ptype in ("reg", "wire", "logic") else ""
-                dtype = decl.ptype if decl.ptype in ("signed", "unsigned") else ""
                 port = dm.Port(
                     name=name,
                     direction=decl.direction,
-                    ptype=ptype,
-                    dtype=dtype,
+                    ptype=decl.ptype or "",
+                    dtype=decl.dtype or "",
                     dim=decl.dim or "",
                     dim_unpacked=decl.dim_unpacked or "",
                     comment=_normalize_comments(decl.comment),
