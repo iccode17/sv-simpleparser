@@ -6,6 +6,7 @@
       "params": [
         {
           "name": "PARAM0",
+          "default": "0",
           "ifdefs": [
             "BAR"
           ],
@@ -15,6 +16,7 @@
         },
         {
           "name": "PARAM3",
+          "default": "0",
           "ifdefs": [
             "!BAR",
             "BAR2"
@@ -25,6 +27,7 @@
         },
         {
           "name": "PARAM4",
+          "default": "0",
           "ifdefs": [
             "!BAR",
             "!BAR2",
@@ -36,6 +39,7 @@
         },
         {
           "name": "PARAM1",
+          "default": "0",
           "comment": [
             "Parameter PARAM1"
           ]
