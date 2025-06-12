@@ -44,6 +44,36 @@ RE_CON = re.compile(r"\s*\.(?P<port>.*)\s*\((?P<con>.*)\)\s*(//(?P<comment>.*))?
 
 
 @dataclass
+class _ConDeclaration:
+    """Connection.
+
+    Attributes:
+        port: Port
+        con: Connection
+        comment: Comment
+    """
+
+    port: str = ""
+    con: str = ""
+    comment: list[str] | None = None
+    ifdefs: list[str] | None = None
+
+    def proc_tokens(self, token, string):
+        if token == ("Port",):
+            self.port = string
+        elif token == ("Connection",):
+            self.con = string
+        elif token == ("PortConnection",):
+            self.port = string
+            self.con = string
+        elif token == ("Comment",):
+            if self.comment is None:
+                self.comment = [string]
+            else:
+                self.comment.append(string)
+
+
+@dataclass
 class _ModInstance:
     """Represents an instance of a module within another module.
 
@@ -55,13 +85,24 @@ class _ModInstance:
 
     name: str | None = None
     module: str | None = None
-    connections: tuple[dm.Connection, ...] | None = None
+    connections: list[_ConDeclaration] | None = None
 
-    def proc_tokens(self, token, string):
+    def proc_tokens(self, token, string, ifdefs):
         if token == Module.Body.Instance.Name:
             self.name = string
-        elif token == Module.Body.Instance.Connections:
-            self.connections = tuple(_normalize_connections(string))
+        elif token == Module.Body.Instance.Con.Start:
+            if self.connections is None:
+                self.connections = [_ConDeclaration(ifdefs=ifdefs)]
+            else:
+                self.connections.append(_ConDeclaration(ifdefs=ifdefs))
+        elif token == Module.Body.Instance.Con.OrderedConnection:
+            if self.connections is None:
+                self.connections = [_ConDeclaration(con=string, ifdefs=ifdefs)]
+            else:
+                self.connections.append(_ConDeclaration(con=string, ifdefs=ifdefs))
+        elif token[:4] == Module.Body.Instance.Con:
+            if self.connections is not None:  # Con.Comment can trigger this
+                self.connections[-1].proc_tokens(token[4:], string)
 
 
 @dataclass
@@ -182,7 +223,7 @@ class _SvModule:
         name: Name of the module
         port_lst: List of Port objects
         param_lst: List of Param objects
-        inst_dict: Dictionary of module instances (instance name -> module)
+        inst_list: List of ModuleInstance objects
         port_decl: List of PortDeclaration objects
         param_decl: List of ParamDeclaration objects
         inst_decl: List of instance declarations
@@ -192,6 +233,7 @@ class _SvModule:
         self.name: str | None = None
         self.port_lst: list[dm.Port] = []
         self.param_lst: list[dm.Param] = []
+        self.inst_lst: list[dm.ModuleInstance] = []
         self.inst_dict: dict[str, str] = {}
 
         self.port_decl: list[_PortDeclaration] = []
@@ -231,9 +273,22 @@ class _SvModule:
                 )
                 self.param_lst.append(param)
 
-    def _gen_inst_dict(self):
+    def _gen_inst_lst(self):
         for decl in self.inst_decl:
-            self.inst_dict[decl.name] = decl.module
+            inst = dm.ModuleInstance(
+                name=decl.name,
+                module=decl.module,
+                connections=tuple(
+                    dm.Connection(
+                        port=con.port or "",
+                        con=con.con or "",
+                        comment=_normalize_comments(con.comment),
+                        ifdefs=tuple(con.ifdefs),
+                    )
+                    for con in decl.connections
+                ),
+            )
+            self.inst_lst.append(inst)
 
     def proc_ifdef(self, token, string):
         # Process the ifdef stack list
@@ -284,7 +339,7 @@ class _SvModule:
             if token == Module.Body.Instance.Module:
                 self.inst_decl.append(_ModInstance(module=string))
             else:
-                self.inst_decl[-1].proc_tokens(token, string)
+                self.inst_decl[-1].proc_tokens(token, string, self.ifdefs_stack.copy())
 
         elif token[:2] == ("Module", "IFDEF"):
             self.proc_ifdef(token, string)
@@ -327,10 +382,7 @@ def parse_text(text: str, file_path: Path | str | None = None) -> dm.File:
             name=mod.name,
             params=mod.param_lst,
             ports=mod.port_lst,
-            insts=tuple(
-                dm.ModuleInstance(name=inst.name, module=inst.module, connections=inst.connections)
-                for inst in mod.inst_decl
-            ),
+            insts=mod.inst_lst,
         )
         for mod in module_lst
     )
@@ -355,6 +407,6 @@ def _parse_text(text: str):
     for mod in module_lst:
         mod._gen_port_lst()
         mod._gen_param_lst()
-        mod._gen_inst_dict()
+        mod._gen_inst_lst()
 
     return module_lst

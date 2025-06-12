@@ -120,6 +120,7 @@ class Connection(_BaseModel):
     port: str = ""
     con: str = ""
     comment: tuple[str, ...] = ()
+    ifdefs: tuple[str, ...] = ()
 
 
 class ModuleInstance(_BaseModel):
