@@ -1,7 +1,7 @@
                           `bcd_adder` Parameters                           
                                                                            
-| Name      | Dimension         | Functional Description                  |
-|-----------|-------------------|-----------------------------------------|
+| Name    | Dimension      | Default     | Functional Description         |
+|---------|----------------|-------------|--------------------------------|
                                                                            
                            `bcd_adder` Interface                           
                                                                            
@@ -15,8 +15,8 @@
                                                                            
                          `tb_bcdadder` Parameters                          
                                                                            
-| Name      | Dimension         | Functional Description                  |
-|-----------|-------------------|-----------------------------------------|
+| Name    | Dimension      | Default     | Functional Description         |
+|---------|----------------|-------------|--------------------------------|
                                                                            
                           `tb_bcdadder` Interface                          
                                                                            

@@ -623,7 +623,7 @@ def comments_callback(lexer: ExtendedRegexLexer, match, ctx: LexerContext):  # n
 
     if current_state == "port_declaration":
         yield match_start, Module.Port.Comment, match_string
-    elif current_state == "param_declaration":
+    elif current_state in ("param_declaration", "param_value", "param_value_delimiter"):
         yield match_start, Module.Param.Comment, match_string
     elif current_state == "instance_connections":
         yield match_start, Module.Body.Instance.Con.Comment, match_string
@@ -777,14 +777,12 @@ class SystemVerilogLexer(ExtendedRegexLexer):
         "port_declaration": [
             include("comments"),
             include("ifdef"),
-            (port_types, Port.PortType),
+            (words(("signed", "unsigned"), suffix=r"\b", prefix=r"\b"), Port.Dtype),
+            (port_types, Port.Ptype),
             # Filter ports used for param declarations
             (r"((\[[^]]+\])+)", Port.PortWidth),  # Match one or more brackets, indicating the port width
             # port declaration ends with a ;, a ); or with the start of another port declaration
-            (
-                words(("input", "output", "inout"), suffix=r"\b", prefix=r"\b"),
-                Port.PortDirection,
-            ),
+            (words(("input", "output", "inout"), suffix=r"\b", prefix=r"\b"), Port.PortDirection),
             (r"\$?[a-zA-Z_]\w*", Port.PortName),
             (r"\)\s*;", Module.HeaderEnd, "#pop:2"),
             (r",", Punctuation),
@@ -802,15 +800,38 @@ class SystemVerilogLexer(ExtendedRegexLexer):
             # param declaration ends with a ;, a ); or with the start of another port declaration
             (r"\bparameter\b", Module.Param),
             (r"\blocalparam\b", Keyword, "#pop"),
-            (r'=\s*([\d\'hHbBdxXzZ?_][\w\'hHbBdxXzZ]*|"[^"]*")', Punctuation),  # Filter parameter values
+            (r"=", Module.Param.Value.Start, "param_value"),  # Filter parameter values
+            # (r'=\s*([\d\'hHbBdxXzZ?_][\w\'hHbBdxXzZ]*|"[^"]*")', Punctuation),  # Filter parameter values
             (r"\$?[a-zA-Z_]\w*", Module.Param.ParamName),
             (r"\)\s*;", Module.HeaderEnd, "#pop:2"),
             (r",", Punctuation),
             (r";", Punctuation, "#pop"),
             default("#pop"),
         ],
+        "param_value": [
+            include("comments_no_whitespace"),
+            (r"[{\[(]", Module.Param.Value, "param_value_delimiter"),
+            # detect strings "string"
+            (r'"(?:\\.|[^"\\])*"', Module.Param.Value),
+            (r"[,);]", Punctuation, "#pop"),
+            (r".", Module.Param.Value),
+        ],
+        "param_value_delimiter": [
+            include("comments_no_whitespace"),
+            (r"[{\[(]", Module.Param.Value, "param_value_delimiter"),
+            (r"[}\])]", Module.Param.Value, "#pop"),
+            # detect strings "string"
+            (r'"(?:\\.|[^"\\])*"', Module.Param.Value),
+            # match any character inside delimiters as param value
+            (r".", Module.Param.Value),
+        ],
         "comments": [
             (r"\s+", Whitespace),
+            (r"(\\)(\n)", bygroups(String.Escape, Whitespace)),  # line continuation
+            (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", comments_callback),
+            (r"/(\\\n)?[*]((.|\n)*?)[*](\\\n)?/", comments_callback),
+        ],
+        "comments_no_whitespace": [
             (r"(\\)(\n)", bygroups(String.Escape, Whitespace)),  # line continuation
             (r"/(\\\n)?/(\n|(.|\n)*?[^\\]\n)", comments_callback),
             (r"/(\\\n)?[*]((.|\n)*?)[*](\\\n)?/", comments_callback),

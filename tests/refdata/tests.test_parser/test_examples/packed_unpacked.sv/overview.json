@@ -6,20 +6,24 @@
       "params": [
         {
           "name": "P_VEC",
-          "dim": "[4:0]"
+          "dim": "[4:0]",
+          "default": "0"
         },
         {
           "name": "P_MATRIX",
-          "dim": "[4:0][3:0]"
+          "dim": "[4:0][3:0]",
+          "default": "0"
         },
         {
           "name": "P_UNPACK",
-          "dim_unpacked": "[4:0]"
+          "dim_unpacked": "[4:0]",
+          "default": "0"
         },
         {
           "name": "P_VEC_UNPACK",
           "dim": "[3:0]",
-          "dim_unpacked": "[4:0]"
+          "dim_unpacked": "[4:0]",
+          "default": "0"
         }
       ],
       "ports": [

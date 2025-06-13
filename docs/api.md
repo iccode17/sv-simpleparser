@@ -22,11 +22,11 @@
     ...         for con in inst.connections:
     ...             print("    ", con.port, con.con, con.comment)
     'adder'
-       Param(ptype='integer', name='DATA_WIDTH', dim='', dim_unpacked='', default='', ifdefs=(), comment=('Width of input operands',))
-       Param(ptype='integer', name='OUTPUT_WIDTH', dim='', dim_unpacked='', default='', ifdefs=(), comment=('Test configuration value',))
-       Port(direction='input', ptype='', dtype='unsigned', name='A', dim='[DATA_WIDTH-1:0]', dim_unpacked='', ifdefs=(), comment=('Packed input operand A',))
-       Port(direction='input', ptype='', dtype='unsigned', name='B', dim='[DATA_WIDTH-1:0]', dim_unpacked='', ifdefs=(), comment=('Packed input operand B',))
-       Port(direction='output', ptype='', dtype='unsigned', name='X', dim='[DATA_WIDTH:0]', dim_unpacked='', ifdefs=(), comment=('Packed sum output',))
+       Param(ptype='integer', name='DATA_WIDTH', dim='', dim_unpacked='', default='8', ifdefs=(), comment=('Width of input operands',))
+       Param(ptype='integer', name='OUTPUT_WIDTH', dim='', dim_unpacked='', default='4', ifdefs=(), comment=('Test configuration value',))
+       Port(direction='input', ptype='logic', dtype='unsigned', name='A', dim='[DATA_WIDTH-1:0]', dim_unpacked='', ifdefs=(), comment=('Packed input operand A',))
+       Port(direction='input', ptype='logic', dtype='unsigned', name='B', dim='[DATA_WIDTH-1:0]', dim_unpacked='', ifdefs=(), comment=('Packed input operand B',))
+       Port(direction='output', ptype='logic', dtype='unsigned', name='X', dim='[DATA_WIDTH:0]', dim_unpacked='', ifdefs=(), comment=('Packed sum output',))
        Port(direction='input', ptype='logic', dtype='', name='byte_p', dim='[7:0]', dim_unpacked='', ifdefs=(), comment=('Packed byte input',))
        Port(direction='input', ptype='logic', dtype='', name='word_p', dim='[3:0][7:0]', dim_unpacked='', ifdefs=(), comment=('Packed 32-bit word (4 bytes)',))
        Port(direction='input', ptype='logic', dtype='', name='flag_u', dim='', dim_unpacked='', ifdefs=(), comment=('Unpacked single bit',))

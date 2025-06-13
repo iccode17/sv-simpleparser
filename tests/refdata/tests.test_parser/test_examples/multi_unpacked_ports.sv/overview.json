@@ -7,6 +7,7 @@
         {
           "name": "WIDTH",
           "dim": "[3:0]",
+          "default": "4'b1010",
           "comment": [
             "4-bit packed"
           ]
@@ -14,7 +15,11 @@
         {
           "ptype": "integer",
           "name": "CONFIG",
-          "dim_unpacked": "[0:2]"
+          "dim_unpacked": "[0:2]",
+          "default": "'{8, 16, 32}",
+          "comment": [
+            "3-element unpacked array"
+          ]
         }
       ],
       "ports": [

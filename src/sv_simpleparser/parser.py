@@ -31,7 +31,6 @@ The parser offers two methods:
 
 import logging
 import re
-from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -119,18 +118,21 @@ class _PortDeclaration:
 
     direction: str
     ptype: str | None = None
+    dtype: str | None = None
     name: list[str] | None = None
     dim: str | None = None
     dim_unpacked: str | None = None
     comment: list[str] | None = None
     ifdefs: list[str] | None = None
 
-    def proc_tokens(self, token, string, ifdefs):
+    def proc_tokens(self, token, string, ifdefs):  # noqa: C901
         """Processes Module.Port tokens and extract data."""
         if token == Module.Port.PortDirection:
             self.direction = string
-        elif token == Module.Port.PortType:
+        elif token == Module.Port.Ptype:
             self.ptype = string
+        elif token == Module.Port.Dtype:
+            self.dtype = string
         elif token == Module.Port.PortName:
             if self.name is None:
                 self.name = [string]
@@ -167,6 +169,7 @@ class _ParamDeclaration:
     dim_unpacked: str | None = None
     comment: list[str] | None = None
     ifdefs: list[str] | None = None
+    default: str = ""
 
     def proc_tokens(self, token, string, ifdefs):
         """Processes Module.Param tokens and extract data."""
@@ -189,25 +192,16 @@ class _ParamDeclaration:
                 self.comment = [string]
             else:
                 self.comment.append(string)
+        elif token == Module.Param.Value:
+            self.default += string
 
 
 def _normalize_comments(comment: list[str]) -> tuple[str, ...]:
     return tuple(line.replace("\n", " ").strip() for line in comment or ())
 
 
-def _normalize_connections(lines: str) -> Iterator[dm.Connection]:
-    # TODO: please use lexer for this hack!
-    for line in lines.splitlines():
-        line = line.strip()  # noqa: PLW2901
-        if not line:
-            continue
-        mat = RE_CON.match(line)
-        if not mat:
-            LOGGER.warning(f"Invalid connection: {line}")
-            continue
-        data = mat.groupdict()
-        data["comment"] = (data["comment"],) if data["comment"] else ()
-        yield dm.Connection(**data)  # type: ignore[arg-type]
+def _normalize_defaults(default: str) -> str:
+    return default.rstrip("\n").strip()
 
 
 def _flip_ifdef(param):
@@ -245,14 +239,11 @@ class _SvModule:
     def _gen_port_lst(self):
         for decl in self.port_decl:
             for name in decl.name:
-                # TODO: maybe split in parser and not in post-processing
-                ptype = decl.ptype if decl.ptype in ("reg", "wire", "logic") else ""
-                dtype = decl.ptype if decl.ptype in ("signed", "unsigned") else ""
                 port = dm.Port(
                     name=name,
                     direction=decl.direction,
-                    ptype=ptype,
-                    dtype=dtype,
+                    ptype=decl.ptype or "",
+                    dtype=decl.dtype or "",
                     dim=decl.dim or "",
                     dim_unpacked=decl.dim_unpacked or "",
                     comment=_normalize_comments(decl.comment),
@@ -269,6 +260,7 @@ class _SvModule:
                     dim=decl.dim or "",
                     dim_unpacked=decl.dim_unpacked or "",
                     comment=_normalize_comments(decl.comment),
+                    default=_normalize_defaults(decl.default),
                     ifdefs=tuple(decl.ifdefs),
                 )
                 self.param_lst.append(param)

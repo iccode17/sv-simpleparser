@@ -1,9 +1,9 @@
                             `adder` Parameters                             
                                                                            
-| Name                 | Dimension     | Functional Description           |
-|----------------------|---------------|----------------------------------|
-| `DATA_WIDTH`         |               | Width of input operands          |
-| `OUTPUT_WIDTH`       |               | Test configuration value         |
+| Name              | Dimension   | Default  | Functional Description     |
+|-------------------|-------------|----------|----------------------------|
+| `DATA_WIDTH`      |             | `8`      | Width of input operands    |
+| `OUTPUT_WIDTH`    |             | `4`      | Test configuration value   |
                                                                            
                              `adder` Interface                             
                                                                            
