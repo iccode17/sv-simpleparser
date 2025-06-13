@@ -24,13 +24,14 @@
 
 from pathlib import Path
 
-from click.testing import CliRunner
 from pytest import mark
-from test2ref import assert_refdata
+from test2ref import assert_refdata, configure
 
 from sv_simpleparser.cli import cli
 
 from .conftest import EXAMPLES_PATH
+
+configure(ignore_spaces=True)
 
 # We are just testing a reduced set of examples here
 EXAMPLES = (
@@ -43,12 +44,10 @@ EXAMPLES = (
 @mark.parametrize("example", EXAMPLES)
 def test_gen_sv_instance(tmp_path, runner, example):
     """Test Info Command."""
-    with runner.isolated_filesystem():
-        # Run the command
-        result = runner.invoke(cli, ["gen-sv-instance", str(example)])
+    result = runner.invoke(cli, ["gen-sv-instance", str(example)])
 
-        assert result.exit_code == 0
-        (tmp_path / "output.txt").write_text(result.output)
+    assert result.exit_code == 0
+    (tmp_path / "output.txt").write_text(result.output)
 
     assert_refdata(test_gen_sv_instance, tmp_path, flavor=example.name)
 
@@ -57,12 +56,10 @@ def test_gen_sv_instance(tmp_path, runner, example):
 @mark.parametrize("options", ((), ("--no-color",)))
 def test_info(tmp_path, runner, example, options):
     """Test Info Command."""
-    with runner.isolated_filesystem():
-        # Run the command
-        result = runner.invoke(cli, [*options, "info", str(example)])
+    result = runner.invoke(cli, [*options, "info", str(example)])
 
-        assert result.exit_code == 0
-        (tmp_path / "output.md").write_text(result.output)
+    assert result.exit_code == 0
+    (tmp_path / "output.md").write_text(result.output)
 
     assert_refdata(test_info, tmp_path, flavor=example.name)
 
@@ -70,19 +67,16 @@ def test_info(tmp_path, runner, example, options):
 @mark.parametrize("example", EXAMPLES)
 def test_json(tmp_path, runner, example):
     """Test json Command."""
-    with runner.isolated_filesystem():
-        # Run the command
-        result = runner.invoke(cli, ["json", str(example)])
+    result = runner.invoke(cli, ["json", str(example)])
 
-        assert result.exit_code == 0
-        (tmp_path / "output.json").write_text(result.output)
+    assert result.exit_code == 0
+    (tmp_path / "output.json").write_text(result.output)
 
     assert_refdata(test_json, tmp_path, flavor=example.name)
 
 
-def test_cli_help_smoke():
+def test_cli_help_smoke(runner):
     """Test that help command works."""
-    runner = CliRunner()
     result = runner.invoke(cli, ["--help"])
     assert result.exit_code == 0
     assert "Usage:" in result.output
@@ -90,11 +84,10 @@ def test_cli_help_smoke():
 
 def test_empty(runner):
     """Test Empty File Command."""
-    with runner.isolated_filesystem():
-        empty_file = Path("file.sv")
-        empty_file.touch()
+    empty_file = Path("file.sv")
+    empty_file.touch()
 
-        # Run the command
-        result = runner.invoke(cli, ["info", str(empty_file)])
+    # Run the command
+    result = runner.invoke(cli, ["info", str(empty_file)])
 
-        assert result.exit_code == 1
+    assert result.exit_code == 1

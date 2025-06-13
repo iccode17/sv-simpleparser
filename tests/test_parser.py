@@ -24,7 +24,7 @@
 from pytest import mark
 from test2ref import assert_refdata
 
-from sv_simpleparser import parse_file
+from sv_simpleparser import File, Module, Port, parse_file, parse_text
 
 from .conftest import EXAMPLES
 
@@ -35,3 +35,51 @@ def test_examples(tmp_path, example):
     file = parse_file(example)
     (tmp_path / "overview.json").write_text(file.overview)
     assert_refdata(test_examples, tmp_path, flavor=example.name)
+
+
+def test_parse_text(tmp_path):
+    """Parse Text."""
+    file_path = tmp_path / "file.sv"
+    text = """
+module text (
+    input  a_i, // Input a
+    output x_o  // Output x
+);
+endmodule
+"""
+    ref = File(
+        path=None,
+        modules=(
+            Module(
+                name="text",
+                params=(),
+                ports=(
+                    Port(
+                        direction="input",
+                        ptype="",
+                        dtype="",
+                        name="a_i",
+                        dim="",
+                        dim_unpacked="",
+                        ifdefs=(),
+                        comment=("Input a",),
+                    ),
+                    Port(
+                        direction="output",
+                        ptype="",
+                        dtype="",
+                        name="x_o",
+                        dim="",
+                        dim_unpacked="",
+                        ifdefs=(),
+                        comment=("Output x",),
+                    ),
+                ),
+                insts=(),
+            ),
+        ),
+    )
+    assert ref == parse_text(text)
+    ref = File(path=file_path, modules=ref.modules)
+    assert ref == parse_text(text, file_path=file_path)
+    assert ref == parse_text(text, file_path=str(file_path))
