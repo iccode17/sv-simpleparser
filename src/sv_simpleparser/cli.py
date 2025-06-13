@@ -43,25 +43,6 @@ _LOGLEVELMAP = {
 arg_filepath = click.argument("file_path", type=click.Path(exists=True, readable=True, path_type=Path))
 
 
-class HasErrorHandler(logging.Handler):
-    """Determine If There Was An Error Higher Message."""
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._has_errors = False
-
-    def emit(self, record):
-        """Handle Log Record."""
-        levelno = record.levelno
-        if levelno >= logging.ERROR:
-            self._has_errors = True
-
-    @property
-    def has_errors(self) -> bool:
-        """True If An Error (Or Higher) Error Level Occurred."""
-        return self._has_errors
-
-
 def _create_console(**kwargs) -> Console:
     return Console(**kwargs)
 
@@ -74,7 +55,6 @@ class Ctx(BaseModel):
     )
 
     console: Console
-    has_error_handler: HasErrorHandler | None = None
 
     verbose: int = 0
     no_color: bool | None = None
@@ -83,8 +63,7 @@ class Ctx(BaseModel):
     def create(no_color: bool | None = None, **kwargs) -> "Ctx":
         """Create."""
         console = _create_console(log_time=False, log_path=False, no_color=no_color)
-        has_error_handler = HasErrorHandler()
-        return Ctx(console=console, has_error_handler=has_error_handler, no_color=no_color, **kwargs)
+        return Ctx(console=console, no_color=no_color, **kwargs)
 
     def __enter__(self):
         # Logging
@@ -100,13 +79,13 @@ class Ctx(BaseModel):
         else:
             handler = logging.StreamHandler(stream=sys.stderr)
             format_ = "%(levelname)s %(message)s"
-        handlers = [handler, self.has_error_handler]
+        handlers = [handler]
         logging.basicConfig(level=level, format=format_, handlers=handlers)
 
         return self
 
-    def __exit__(self, exc_type, exc_value, tb):
-        if exc_type or self.has_error_handler.has_errors:
+    def __exit__(self, exc_type, exc_value, tb):  # pragma: no cover
+        if exc_type:
             if exc_type is KeyboardInterrupt:
                 self.console.print("[red]Aborted.")
             else:
