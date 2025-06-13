@@ -47,3 +47,9 @@ def examples() -> Path:
 def runner() -> CliRunner:
     """CLI Runner."""
     return CliRunner()
+
+
+@fixture(autouse=True)
+def enforce_terminal_size(monkeypatch):
+    """Fix issue with varying terminal size."""
+    monkeypatch.setenv("SV_SIMPLEPARSER_WIDTH", "75")
