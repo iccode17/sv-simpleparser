@@ -25,11 +25,13 @@
 from pathlib import Path
 
 from pytest import mark
-from test2ref import assert_refdata
+from test2ref import assert_refdata, configure
 
 from sv_simpleparser.cli import cli
 
 from .conftest import EXAMPLES_PATH
+
+configure(ignore_spaces=True)
 
 # We are just testing a reduced set of examples here
 EXAMPLES = (

@@ -49,3 +49,9 @@ def runner():
     runner = CliRunner()
     with runner.isolated_filesystem():
         yield runner
+
+
+@fixture(autouse=True)
+def enforce_terminal_size(monkeypatch):
+    """Fix issue with varying terminal size."""
+    monkeypatch.setenv("SV_SIMPLEPARSER_WIDTH", "75")
