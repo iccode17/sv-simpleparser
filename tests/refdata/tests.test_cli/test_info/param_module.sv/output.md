@@ -14,6 +14,7 @@
 | `clk`       | `1`           | `input`  |                        |
 | `rst_n`     | `1`           | `input`  | active-low reset       |
 | `data_in`   | `[WIDTH-1:0]` | `input`  | Input data             |
+|             |               |          | other comment          |
 | `data_out`  | `[WIDTH-1:0]` | `output` |                        |
 | `bidir_bus` | `[DEPTH-1:0]` | `inout`  |                        |
                                                                    

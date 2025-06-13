@@ -1,7 +1,8 @@
 // Test case 1: Simple parameters with various data types
 module test1 #(
     parameter INT_PARAM = 42,
-    parameter REAL_PARAM = 3.14,
+    parameter REAL_PARAM, BAR_PARAM = 3.14, // comment 1
+    // comment 2
     parameter STRING_PARAM = "default",
     parameter LOGIC_PARAM = 1'b1
 ) ();
