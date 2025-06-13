@@ -142,11 +142,18 @@ def gen_sv_instance(ctx, file_path):  # noqa: ARG001
 @cli.command()
 @arg_filepath
 @pass_ctx
-def info(ctx: Ctx, file_path: Path) -> None:
+@click.option(
+    "--width",
+    "-w",
+    type=int,
+    help="Enforce Table Width. Environment Variable SV_SIMPLEPARSER_WIDTH.",
+    envvar="SV_SIMPLEPARSER_WIDTH",
+)
+def info(ctx: Ctx, file_path: Path, width: int | None = None) -> None:
     """Outputs information about a SV file."""
     file = parse_file(file_path)
     for module in file.modules:
-        table_io, table_param = gen_markdown_table(module)
+        table_io, table_param = gen_markdown_table(module, width=width)
         ctx.console.print(table_param)
         ctx.console.print(table_io)
 

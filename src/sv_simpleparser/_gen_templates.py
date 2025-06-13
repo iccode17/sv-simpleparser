@@ -48,15 +48,15 @@ def gen_instance(mod):
     return instance_file
 
 
-def gen_markdown_table(mod: Module) -> tuple[Table, Table]:
-    table = Table(title=f"`{mod.name}` Interface", box=box.MARKDOWN)
+def gen_markdown_table(mod: Module, width: int | None = None) -> tuple[Table, Table]:
+    table = Table(title=f"`{mod.name}` Interface", box=box.MARKDOWN, width=width)
 
     table.add_column("Name", no_wrap=True)
     table.add_column("Dimension", no_wrap=True)
     table.add_column("I/O", no_wrap=True)
     table.add_column("Functional Description")
 
-    table_param = Table(title=f"`{mod.name}` Parameters", box=box.MARKDOWN)
+    table_param = Table(title=f"`{mod.name}` Parameters", box=box.MARKDOWN, width=width)
 
     table_param.add_column("Name", no_wrap=True)
     table_param.add_column("Dimension", no_wrap=True)
