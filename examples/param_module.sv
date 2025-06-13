@@ -12,6 +12,7 @@ import test_pack::*;
     input wire clk,
     input wire rst_n,  // active-low reset
     input wire [WIDTH-1:0] data_in, // Input data
+    // other comment
     output reg [WIDTH-1:0] data_out,
     inout wire [DEPTH-1:0] bidir_bus
 );
@@ -25,7 +26,8 @@ import test_pack::*;
         .DATA_WIDTH(WIDTH),
         .INIT_VALUE(INIT_VAL)
     ) u_sub_module (
-        .clk(clk),
+        .clk(clk), // comment
+        // other comment
         .reset(rst_n),
         .input_data(data_in),
         .output_data(internal_wire),

@@ -46,7 +46,8 @@
           "name": "data_in",
           "dim": "[WIDTH-1:0]",
           "comment": [
-            "Input data"
+            "Input data",
+            "other comment"
           ]
         },
         {
@@ -69,7 +70,11 @@
           "connections": [
             {
               "port": "clk",
-              "con": "clk"
+              "con": "clk",
+              "comment": [
+                "comment",
+                "other comment"
+              ]
             },
             {
               "port": "reset",
