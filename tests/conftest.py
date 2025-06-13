@@ -44,6 +44,8 @@ def examples() -> Path:
 
 
 @fixture
-def runner() -> CliRunner:
+def runner():
     """CLI Runner."""
-    return CliRunner()
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        yield runner
